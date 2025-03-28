@@ -8,19 +8,19 @@ export default function Home() {
   const [showLogin, setShowLogin] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-gray-100">
+    <div className="min-h-screen bg-[#a86c22] from-slate-900 to-slate-800 text-gray-100">
       {/* Header */}
-      <header className="bg-slate-900 shadow-lg">
+      <header className="bg-[#3fa642] shadow-lg">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-cyan-400">EventHub</h1>
+            <h1 className="text-3xl font-bold text-black">EventHub</h1>
             <nav className="space-x-6">
-              <a href="#" className="text-cyan-400 hover:text-cyan-300 transition">Home</a>
-              <a href="#" className="text-cyan-400 hover:text-cyan-300 transition">About</a>
-              <a href="#" className="text-cyan-400 hover:text-cyan-300 transition">Contact</a>
+              <a href="#" className="text-black transition">Home</a>
+              <a href="#" className="text-black transition">About</a>
+              <a href="#" className="text-black transition">Contact</a>
               <button 
                 onClick={() => setShowLogin(true)}
-                className="bg-cyan-900 hover:bg-cyan-800 text-cyan-100 font-semibold py-2 px-4 rounded-lg transition"
+                className="bg-cyan-900 hover:bg-cyan-800 text-black font-semibold py-2 px-4 rounded-lg transition"
               >
                 Login
               </button>
@@ -34,7 +34,7 @@ export default function Home() {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-slate-900 rounded-lg p-8 max-w-md w-full mx-4 border border-cyan-800">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-cyan-400">Login</h2>
+              <h2 className="text-2xl font-bold text-black">Login</h2>
               <button 
                 onClick={() => setShowLogin(false)}
                 className="text-gray-400 hover:text-gray-200"
@@ -71,7 +71,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-16">
         <div className="text-center">
-          <h2 className="text-5xl font-bold mb-6 text-cyan-400">Discover Amazing Events</h2>
+          <h2 className="text-5xl font-bold mb-6 text-black-400">Discover Amazing Events</h2>
           <p className="text-xl text-gray-300 mb-8">Find and join the most exciting events in your area</p>
           <button className="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 px-8 rounded-full transition">
             Get Started
@@ -88,7 +88,7 @@ export default function Home() {
               className={`px-6 py-2 rounded-lg transition ${
                 activeTab === 'upcoming'
                   ? 'bg-cyan-600 text-white'
-                  : 'text-cyan-400 hover:bg-cyan-900'
+                  : 'text-black-400 hover:bg-cyan-900'
               }`}
             >
               Upcoming Events
@@ -98,7 +98,7 @@ export default function Home() {
               className={`px-6 py-2 rounded-lg transition ${
                 activeTab === 'past'
                   ? 'bg-cyan-600 text-white'
-                  : 'text-cyan-400 hover:bg-cyan-900'
+                  : 'text-black-400 hover:bg-cyan-900'
               }`}
             >
               Past Events
@@ -108,7 +108,7 @@ export default function Home() {
               className={`px-6 py-2 rounded-lg transition ${
                 activeTab === 'create'
                   ? 'bg-cyan-600 text-white'
-                  : 'text-cyan-400 hover:bg-cyan-900'
+                  : 'text-black-400 hover:bg-cyan-900'
               }`}
             >
               Create Event
@@ -124,7 +124,7 @@ export default function Home() {
                   <div key={event} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg border border-cyan-800">
                     <div className="h-48 bg-cyan-900"></div>
                     <div className="p-4">
-                      <h3 className="text-xl font-semibold mb-2 text-cyan-400">Event Title {event}</h3>
+                      <h3 className="text-xl font-semibold mb-2 text-black-400">Event Title {event}</h3>
                       <p className="text-gray-300 mb-4">Date: {new Date().toLocaleDateString()}</p>
                       <button className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded transition">
                         Join Event
@@ -181,7 +181,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-slate-900 mt-16 border-t border-cyan-800">
         <div className="container mx-auto px-6 py-8">
-          <div className="text-center text-cyan-400">
+          <div className="text-center text-black-400">
             <p>&copy; 2024 EventHub. All rights reserved.</p>
           </div>
         </div>
