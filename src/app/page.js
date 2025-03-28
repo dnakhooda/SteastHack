@@ -9,7 +9,8 @@ export default function Home() {
   const [showLogin, setShowLogin] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-black text-black">
+      
       {/* Header */}
       <header className="h-20 bg-gradient-to-r from-emerald-600 via-emerald-500 to-blue-500 shadow-lg">
         <div className="container mx-auto px-6 py-4">
