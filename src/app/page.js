@@ -68,17 +68,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-6 py-16">
-        <div className="text-center">
-          <h2 className="text-5xl font-bold mb-6 text-black">Discover Amazing Events</h2>
-          <p className="text-xl text-gray-700 mb-8">Find and join the most exciting events in your area</p>
-          <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full transition">
-            Get Started
-          </button>
-        </div>
-      </section>
-
       {/* Tabs Section */}
       <section className="container mx-auto px-6 py-8">
         <div className="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
