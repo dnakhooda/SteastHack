@@ -124,27 +124,37 @@ export default function EventPage() {
 
       setIsSignedUp(true);
 
+      // Fetch updated event data
       const updatedResponse = await fetch("/api/events");
       const events = await updatedResponse.json();
       const updatedEvent = events.find((e) => e.id === eventData.id);
 
       if (updatedEvent) {
-        // Fetch user details for all attendees
+        // Fetch user details for all attendees, including the new user
         const attendeesWithDetails = await Promise.all(
           updatedEvent.attendees.map(async (userId) => {
             const userDetails = await fetchUserDetails(userId);
             return {
               name: userDetails?.name || "Unknown User",
               username: userDetails?.email || "@unknown",
+              id: userDetails?.id || "-1",
             };
           })
         );
 
+        // Update both attendees and participants lists
         setEventData((prev) => ({
           ...prev,
           attendees: updatedEvent.attendees,
           participants: attendeesWithDetails,
         }));
+
+        // Log the updated data for debugging
+        console.log("Updated event data:", {
+          attendees: updatedEvent.attendees,
+          participants: attendeesWithDetails,
+          currentUser: session.user.id,
+        });
       }
     } catch (error) {
       console.error("Error joining event:", error);
@@ -180,6 +190,7 @@ export default function EventPage() {
             return {
               name: userDetails?.name || "Unknown User",
               username: userDetails?.email || "@unknown",
+              id: userDetails?.id || "-1",
             };
           })
         );
@@ -189,6 +200,10 @@ export default function EventPage() {
           attendees: updatedEvent.attendees,
           participants: attendeesWithDetails,
         }));
+
+        if (userId === session?.user?.id) {
+          setIsSignedUp(false);
+        }
       }
     } catch (error) {
       console.error("Error removing participant:", error);
@@ -380,7 +395,7 @@ export default function EventPage() {
       <footer className="bg-black mt-16 relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2024 Stetson Social. All rights reserved.</p>
+            <p>&copy; 2025 Stetson Social. All rights reserved.</p>
           </div>
         </div>
       </footer>

@@ -99,7 +99,7 @@ export default function LearnMore() {
       <footer className="bg-black mt-16">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2024 Stetson Social. All rights reserved.</p>
+            <p>&copy; 2025 Stetson Social. All rights reserved.</p>
           </div>
         </div>
       </footer>
