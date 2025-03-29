@@ -22,12 +22,12 @@ export default function LearnMore() {
       <header className="h-20 bg-gradient-to-r from-black via-black to-[#D41B2C] shadow-lg">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
+            <button className="flex items-center space-x-6" onClick={() => router.push('/')}>
               <div className="w-12 h-12 bg-[#D41B2C] flex items-center justify-center">
                 <span className="text-white text-4xl font-serif font-light tracking-tighter leading-none" style={{ fontFamily: 'Times New Roman' }}>N</span>
               </div>
               <h1 className="text-3xl font-bold text-white">EventHub</h1>
-            </div>
+            </button>
             <nav className="space-x-8">
               <button 
                 onClick={() => router.push('/')}
@@ -35,8 +35,8 @@ export default function LearnMore() {
               >
                 Home
               </button>
-              <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
-              <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
+              <a href="/learnmore" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
+              <a href="/contact" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
               <button 
                 onClick={() => router.push('/login')}
                 className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] font-semibold py-2 px-4 rounded-lg transition"
