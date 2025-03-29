@@ -197,7 +197,7 @@ export default function Home() {
               <div className="w-12 h-12 bg-[#D41B2C] flex items-center justify-center">
                 <span className="text-white text-4xl font-serif font-light tracking-tighter leading-none" style={{ fontFamily: 'Times New Roman' }}>N</span>
               </div>
-              <h1 className="text-3xl font-bold text-white">EventHub</h1>
+              <h1 className="text-3xl font-bold text-white">SteastHub</h1>
             </button>
             <nav className="space-x-8">
               <a href="/" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">Home</a>
@@ -418,7 +418,7 @@ export default function Home() {
       <footer className="bg-black mt-auto relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2025 EventHub. All rights reserved.</p>
+            <p>&copy; 2025 SteastHub. All rights reserved.</p>
           </div>
         </div>
       </footer>

@@ -26,7 +26,7 @@ export default function About() {
                             <div className="w-12 h-12 bg-[#D41B2C] flex items-center justify-center">
                                 <span className="text-white text-4xl font-serif font-light tracking-tighter leading-none" style={{ fontFamily: 'Times New Roman' }}>N</span>
                             </div>
-                            <h1 className="text-3xl font-bold text-white">EventHub</h1>
+                            <h1 className="text-3xl font-bold text-white">SteastHub</h1>
                         </button>
                         <nav className="space-x-8">
                             <button
@@ -58,7 +58,7 @@ export default function About() {
                         <section className="bg-white rounded-lg p-8 shadow-lg border-2 border-[#D41B2C]">
                             <h2 className="text-2xl font-bold mb-4 text-[#D41B2C]">Our Mission</h2>
                             <p className="text-lg text-gray-700">
-                                At EventHub, we're dedicated to fostering a vibrant community within Stetson East. Our mission is to create a seamless platform that connects Northeastern students, enabling them to discover, create, and participate in meaningful events that enrich their campus experience.
+                                At SteastHub, we're dedicated to fostering a vibrant community within Stetson East. Our mission is to create a seamless platform that connects Northeastern students, enabling them to discover, create, and participate in meaningful events that enrich their campus experience.
                             </p>
                         </section>
 
@@ -146,7 +146,7 @@ export default function About() {
             <footer className="bg-black mt-16">
                 <div className="container mx-auto px-6 py-8">
                     <div className="text-center text-white">
-                        <p>&copy; 2024 EventHub. All rights reserved.</p>
+                        <p>&copy; 2024 SteastHub. All rights reserved.</p>
                     </div>
                 </div>
             </footer>
