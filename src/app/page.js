@@ -2,12 +2,14 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from "react";
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('upcoming');
-  let router = useRouter();
+  const router = useRouter();
+  const { data: session } = useSession();
 
-  const handleClick= (e) => {
+  const handleClick = (e) => {
     e.preventDefault();
     if (!router) {
       return;
@@ -15,8 +17,9 @@ export default function Home() {
     router.push('/login');
   }
 
-  const handleJoinEvent = (eventId) => {
-    router.push(`/event/${eventId}`);
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push(`/`);
   };
 
   return (
@@ -69,6 +72,26 @@ export default function Home() {
               >
                 Login
               </button>
+              {session ? (
+                <>
+                  <span className="text-white text-lg font-medium">
+                    Welcome, {session.user.name}
+                  </span>
+                  <button 
+                    onClick={handleSignOut}
+                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <button 
+                  onClick={handleClick}
+                  className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
+                >
+                  Login
+                </button>
+              )}
             </nav>
           </div>
         </div>
