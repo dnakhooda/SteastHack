@@ -1,13 +1,26 @@
 "use client";
 
+import { useRouter } from 'next/navigation'
+
 export default function Home() {
+  let router = useRouter();
+
+  const handleCloseClick= (e) => {
+    e.preventDefault();
+    if (!router) {
+      return;
+    }
+    router.push('/login');
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-black">Login</h2>
           <button
-            className="text-gray-500 hover:text-gray-700"
+            className="text-[#D41B2C] hover:text-[#B31824]"
+            onClick={handleCloseClick}
           >
             ✕
           </button>
@@ -19,7 +32,7 @@ export default function Home() {
             </label>
             <input
               type="email"
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500 text-black"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-[#D41B2C] text-black"
             />
           </div>
           <div>
@@ -28,12 +41,12 @@ export default function Home() {
             </label>
             <input
               type="password"
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-green-500 text-black"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-[#D41B2C] text-black"
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition"
+            className="w-full bg-[#D41B2C] hover:bg-[#B31824] text-white font-bold py-2 px-4 rounded-lg transition"
           >
             Login
           </button>
