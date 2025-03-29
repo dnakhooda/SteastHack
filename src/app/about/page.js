@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-
+import Nav from '@/componenets/Nav';
+    
 export default function About() {
     const router = useRouter();
 
@@ -18,35 +19,7 @@ export default function About() {
         }
       `}</style>
 
-            {/* Header */}
-            <header className="h-20 bg-gradient-to-r from-black via-black to-[#D41B2C] shadow-lg">
-                <div className="container mx-auto px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <button className="flex items-center space-x-6" onClick={() => router.push('/')}>
-                            <div className="w-12 h-12 bg-[#D41B2C] flex items-center justify-center">
-                                <span className="text-white text-4xl font-serif font-light tracking-tighter leading-none" style={{ fontFamily: 'Times New Roman' }}>N</span>
-                            </div>
-                            <h1 className="text-3xl font-bold text-white">SteastHub</h1>
-                        </button>
-                        <nav className="space-x-8">
-                            <button
-                                onClick={() => router.push('/')}
-                                className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide"
-                            >
-                                Home
-                            </button>
-                            <a href="/about" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
-                            <a href="/contact" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
-                            <button
-                                onClick={() => router.push('/login')}
-                                className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] font-semibold py-2 px-4 rounded-lg transition"
-                            >
-                                Login
-                            </button>
-                        </nav>
-                    </div>
-                </div>
-            </header>
+            <Nav />
 
             {/* Main Content */}
             <main className="container mx-auto px-6 py-16">
