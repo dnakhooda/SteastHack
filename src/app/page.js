@@ -2,18 +2,25 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from "react";
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('upcoming');
-  let router = useRouter();
+  const router = useRouter();
+  const { data: session } = useSession();
 
-  const handleClick= (e) => {
+  const handleClick = (e) => {
     e.preventDefault();
     if (!router) {
       return;
     }
     router.push('/login');
   }
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push('/');
+  };
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -54,12 +61,26 @@ export default function Home() {
               <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Home</a>
               <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
               <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
-              <button 
-                onClick={handleClick}
-                className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
-              >
-                Login
-              </button>
+              {session ? (
+                <>
+                  <span className="text-white text-lg font-medium">
+                    Welcome, {session.user.name}
+                  </span>
+                  <button 
+                    onClick={handleSignOut}
+                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <button 
+                  onClick={handleClick}
+                  className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
+                >
+                  Login
+                </button>
+              )}
             </nav>
           </div>
         </div>
