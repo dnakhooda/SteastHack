@@ -85,12 +85,20 @@ export default function Home() {
                   </button>
                 </>
               ) : (
-                <button 
-                  onClick={handleClick}
-                  className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
-                >
-                  Login
-                </button>
+                <>
+                  <button 
+                    onClick={handleClick}
+                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
+                  >
+                    Login
+                  </button>
+                  <button 
+                    onClick={() => router.push('/signup')}
+                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
+                  >
+                    Sign Up
+                  </button>
+                </>
               )}
             </nav>
           </div>
