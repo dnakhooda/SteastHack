@@ -132,7 +132,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-16 relative z-10">
         <div className="text-center">
-          <h2 className="text-5xl font-bold mb-6 text-black animate-bounce">Discover Events in Stetson East!</h2>
+          <h2 className="text-5xl font-bold mb-6 text-black animate-bounce font-['Shoulders']">Discover Events in Stetson East!</h2>
           <button 
             onClick={() => router.push('/learnmore')}
             className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824]"
