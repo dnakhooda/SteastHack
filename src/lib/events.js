@@ -24,18 +24,6 @@ function loadEvents() {
   }
 }
 
-// Helper function to save events to localStorage (client-side only)
-function saveEvents() {
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem("events", JSON.stringify(events));
-      console.log("Saved events to localStorage:", events);
-    } catch (error) {
-      console.error("Error saving events to localStorage:", error);
-    }
-  }
-}
-
 // Helper function to create a new event
 export function createEvent(eventData) {
   const newEvent = {
@@ -107,35 +95,6 @@ export function addAttendee(eventId, userId) {
   return false;
 }
 
-// Helper function to delete an event
-export async function deleteEvent(eventId) {
-  console.log("Attempting to delete event:", eventId);
-  console.log("Current events:", events);
-
-  // First check if the event exists
-  const event = getEventById(eventId);
-  if (!event) {
-    console.error("Event not found:", eventId);
-    throw new Error("Event not found");
-  }
-
-  // Find the event index in the in-memory array
-  const eventIndex = events.findIndex((e) => e.id === eventId);
-  if (eventIndex === -1) {
-    console.error("Event not found in array:", eventId);
-    throw new Error("Event not found");
-  }
-
-  // Remove the event from the in-memory array
-  events.splice(eventIndex, 1);
-  console.log("Event deleted successfully. Remaining events:", events);
-
-  // Save to localStorage if available
-  saveEvents();
-
-  return true;
-}
-
 // Initialize events from localStorage if available
 export function initializeEvents() {
   if (typeof window !== "undefined") {
@@ -149,27 +108,6 @@ export function initializeEvents() {
       console.error("Error initializing events:", error);
     }
   }
-}
-
-// Helper function to update an event
-export async function updateEvent(eventId, updateData) {
-  console.log("Attempting to update event:", { eventId, updateData });
-  console.log("Current events:", events);
-
-  const event = getEventById(eventId);
-  if (!event) {
-    console.error("Event not found:", eventId);
-    throw new Error("Event not found");
-  }
-
-  // Update the event with new data
-  Object.assign(event, updateData);
-  console.log("Updated event:", event);
-
-  // Save to localStorage if available
-  saveEvents();
-
-  return true;
 }
 
 // Helper function to remove attendee from event
