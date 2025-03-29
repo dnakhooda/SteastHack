@@ -2,11 +2,18 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from "react";
-import Image from "next/image";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('upcoming');
-  const [showLogin, setShowLogin] = useState(false);
+  let router = useRouter();
+
+  const handleClick= (e) => {
+    e.preventDefault();
+    if (!router) {
+      return;
+    }
+    router.push('/login');
+  }
 
   const router = useRouter();
 
@@ -54,8 +61,8 @@ export default function Home() {
               <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
               <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
               <button 
-                onClick={() => setShowLogin(true)}
-                className="bg-black text-white font-semibold py-2 px-4 rounded-lg transition hover:bg-opacity-80"
+                onClick={handleClick}
+                className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
               >
                 Login
               </button>
@@ -63,45 +70,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-
-      {/* Login Modal */}
-      {showLogin && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 shadow-lg border border-[#D41B2C]">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-black">Login</h2>
-              <button 
-                onClick={() => setShowLogin(false)}
-                className="text-black hover:text-[#D41B2C]"
-              >
-                ✕
-              </button>
-            </div>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-black mb-2">Email</label>
-                <input
-                  type="email"
-                  className="w-full px-4 py-2 rounded-lg border border-[#D41B2C] bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-black mb-2">Password</label>
-                <input
-                  type="password"
-                  className="w-full px-4 py-2 rounded-lg border border-[#D41B2C] bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded-lg transition hover:bg-[#B31824]"
-              >
-                Login
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-16">
@@ -133,20 +101,20 @@ export default function Home() {
               </button>
               <button
                 onClick={() => setActiveTab('past')}
-                className={`px-6 py-2 rounded-lg transition ${
+                className={`px-6 py-2 rounded-lg transition border-2 ${
                   activeTab === 'past'
-                    ? 'bg-[#D41B2C] text-white'
-                    : 'text-black hover:bg-[#D41B2C] hover:text-white'
+                    ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
+                    : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
                 }`}
               >
                 Past Events
               </button>
               <button
                 onClick={() => setActiveTab('create')}
-                className={`px-6 py-2 rounded-lg transition ${
+                className={`px-6 py-2 rounded-lg transition border-2 ${
                   activeTab === 'create'
-                    ? 'bg-[#D41B2C] text-white'
-                    : 'text-black hover:bg-[#D41B2C] hover:text-white'
+                    ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
+                    : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
                 }`}
               >
                 Create Event
