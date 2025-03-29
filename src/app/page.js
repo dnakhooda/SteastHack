@@ -19,7 +19,7 @@ export default function Home() {
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });
-    router.push(`/event/${eventId}`);
+    router.push(`/`);
   };
 
   return (
