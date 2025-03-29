@@ -12,6 +12,12 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@font-face {
+  font-family: 'Shoulders';
+  src: url('/fonts/BigShouldersInline-VariableFont_opsz,wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

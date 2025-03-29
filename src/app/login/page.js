@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { signIn, signOut } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 
 export default function Home() {
   let router = useRouter();
@@ -143,6 +143,17 @@ export default function Home() {
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+        <div className="mt-4 text-center">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <button
+              onClick={() => router.push('/signup')}
+              className="text-[#D41B2C] hover:text-[#B31824] font-semibold"
+            >
+              Sign up
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );

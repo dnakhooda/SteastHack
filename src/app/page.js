@@ -27,8 +27,36 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-white text-black relative overflow-hidden">
       <style jsx>{`
+        @font-face {
+          font-family: 'Big Shoulders Inline';
+          src: url('/fonts/BigShouldersInline-VariableFont_opsz,wght.ttf') format('truetype-variations');
+          font-weight: 100 900;
+        }
+        
+        .hero-text {
+          font-family: 'Big Shoulders Inline', sans-serif;
+          color: #000000;
+          font-weight: 700;
+          letter-spacing: 0.01em;
+          line-height: 1.2;
+        }
+        
+        .background-image {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: url('/krentzman-quad.png');
+          background-size: cover;
+          background-position: center;
+          opacity: 0.50;
+          filter: brightness(1.2) saturate(1.1);
+          pointer-events: none;
+          z-index: 0;
+        }
         @keyframes swirl {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
@@ -56,8 +84,10 @@ export default function Home() {
         }
       `}</style>
 
+      <div className="background-image" />
+      
       {/* Header */}
-      <header className="h-20 bg-gradient-to-r from-black via-black to-[#D41B2C] shadow-lg">
+      <header className="h-20 bg-gradient-to-r from-black via-black to-[#D41B2C] shadow-lg relative z-10">
         <div className="container mx-auto px-0 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
@@ -70,12 +100,6 @@ export default function Home() {
               <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">Home</a>
               <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">About</a>
               <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">Contact</a>
-              <button 
-                onClick={handleClick}
-                className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition hover:shadow-lg hover:-translate-y-1"
-              >
-                Login
-              </button>
               {session ? (
                 <>
                   <span className="text-white text-lg font-medium">
@@ -89,12 +113,20 @@ export default function Home() {
                   </button>
                 </>
               ) : (
-                <button 
-                  onClick={handleClick}
-                  className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
-                >
-                  Login
-                </button>
+                <>
+                  <button 
+                    onClick={handleClick}
+                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
+                  >
+                    Login
+                  </button>
+                  <button 
+                    onClick={() => router.push('/signup')}
+                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
+                  >
+                    Sign Up
+                  </button>
+                </>
               )}
             </nav>
           </div>
@@ -102,9 +134,9 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-16">
+      <section className="container mx-auto px-6 py-16 relative z-10">
         <div className="text-center">
-          <h2 className="text-5xl font-bold mb-6 text-black animate-bounce">Discover Events in Stetson East!</h2>
+          <h2 className="text-5xl font-bold mb-6 text-black animate-bounce font-['Shoulders']">Discover Events in Stetson East!</h2>
           <button 
             onClick={() => router.push('/learnmore')}
             className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824]"
@@ -115,9 +147,9 @@ export default function Home() {
       </section>
 
       {/* Tabs Section */}
-      <section className="container mx-auto px-6 py-8">
+      <section className="container mx-auto px-6 py-8 relative z-10">
         <div className="bg-white rounded-lg p-6 shadow-lg relative">
-          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-black via-black to-[#D41B2C] p-[6px]">
+          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-black via-black to-[#D41B2C] p-[2px]">
             <div className="bg-white rounded-lg h-full w-full"></div>
           </div>
           <div className="relative bg-white rounded-lg p-6">
@@ -221,7 +253,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-black mt-16">
+      <footer className="bg-black mt-16 relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
             <p>&copy; 2024 EventHub. All rights reserved.</p>

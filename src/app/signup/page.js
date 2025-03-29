@@ -202,6 +202,17 @@ export default function SignUp() {
             {isLoading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
+        <div className="mt-4 text-center">
+          <p className="text-gray-600">
+            Already have an account?{' '}
+            <button
+              onClick={() => router.push('/login')}
+              className="text-[#D41B2C] hover:text-[#B31824] font-semibold"
+            >
+              Login
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
