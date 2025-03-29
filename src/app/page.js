@@ -69,7 +69,10 @@ export default function Home() {
       <section className="container mx-auto px-6 py-16">
         <div className="text-center">
           <h2 className="text-5xl font-bold mb-6 text-black animate-bounce">Discover Events in Stetson East!</h2>
-          <button className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824]">
+          <button 
+            onClick={() => router.push('/learnmore')}
+            className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824]"
+          >
             Learn More
           </button>
         </div>
