@@ -85,3 +85,36 @@ export function joinEvent(eventId, userId) {
   });
   return true;
 }
+
+// Helper function to remove an attendee from an event
+export async function removeAttendee(eventId, userId) {
+  console.log("Attempting to remove attendee:", { eventId, userId });
+  const event = await getEventById(eventId);
+  if (!event) {
+    console.error("Event not found:", eventId);
+    throw new Error("Event not found");
+  }
+
+  // Check if user is in the attendees list
+  if (!event.attendees.includes(userId)) {
+    console.error("User is not in attendees list:", { eventId, userId });
+    throw new Error("User is not in attendees list");
+  }
+
+  // Remove the user from attendees
+  event.attendees = event.attendees.filter((id) => id !== userId);
+  console.log("Updated attendees:", event.attendees);
+
+  // Save the updated events list to localStorage if available
+  if (typeof window !== "undefined" && window.localStorage) {
+    try {
+      const events = JSON.parse(localStorage.getItem("events") || "[]");
+      const updatedEvents = events.map((e) => (e.id === eventId ? event : e));
+      localStorage.setItem("events", JSON.stringify(updatedEvents));
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+    }
+  }
+
+  return true;
+}

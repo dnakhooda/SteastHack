@@ -64,6 +64,7 @@ export default function EventPage() {
             return {
               name: userDetails?.name || "Unknown User",
               username: userDetails?.email || "@unknown",
+              id: userDetails?.id || "-1",
             };
           })
         );
@@ -152,8 +153,6 @@ export default function EventPage() {
   };
 
   const handleRemoveParticipant = async (userId) => {
-    if (!isEventOwner) return;
-
     try {
       const response = await fetch(`/api/events/${eventData.id}/remove`, {
         method: "POST",
@@ -347,7 +346,7 @@ export default function EventPage() {
                         </p>
                       </div>
                     </div>
-                    {isEventOwner && (
+                    {(isEventOwner || session?.user?.id === participant.id) && (
                       <button
                         onClick={() =>
                           handleRemoveParticipant(eventData.attendees[index])
