@@ -127,20 +127,20 @@ export default function Home() {
               </button>
               <button
                 onClick={() => setActiveTab('past')}
-                className={`px-6 py-2 rounded-lg transition ${
+                className={`px-6 py-2 rounded-lg transition border-2 ${
                   activeTab === 'past'
-                    ? 'bg-[#D41B2C] text-white'
-                    : 'text-black hover:bg-[#D41B2C] hover:text-white'
+                    ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
+                    : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
                 }`}
               >
                 Past Events
               </button>
               <button
                 onClick={() => setActiveTab('create')}
-                className={`px-6 py-2 rounded-lg transition ${
+                className={`px-6 py-2 rounded-lg transition border-2 ${
                   activeTab === 'create'
-                    ? 'bg-[#D41B2C] text-white'
-                    : 'text-black hover:bg-[#D41B2C] hover:text-white'
+                    ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
+                    : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
                 }`}
               >
                 Create Event
