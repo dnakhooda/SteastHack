@@ -47,13 +47,6 @@ export async function POST(request) {
     // Create the data URL
     const dataUrl = `data:${file.type};base64,${base64}`;
 
-    // Log the response for debugging
-    console.log('Image uploaded successfully:', {
-      type: file.type,
-      size: file.size,
-      dataUrlLength: dataUrl.length
-    });
-
     return NextResponse.json({ 
       url: dataUrl,
       success: true
