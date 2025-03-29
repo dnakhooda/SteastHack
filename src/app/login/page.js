@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { signIn, signOut } from 'next-auth/react';
 

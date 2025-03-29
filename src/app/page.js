@@ -17,6 +17,10 @@ export default function Home() {
     router.push('/login');
   }
 
+  const handleJoinEvent = (eventTitle) => {
+    router.push(`/events/${eventTitle}`);
+  };
+
   const handleSignOut = async () => {
     await signOut({ redirect: false });
     router.push(`/`);
@@ -155,7 +159,7 @@ export default function Home() {
               {activeTab === 'upcoming' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* Event Cards */}
-                  {[1, 2, 3, 4].map((event) => (
+                  {["Event1", "Event2", "Event3", "Event4"].map((event) => (
                     <div key={event} className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-[#D41B2C]">
                       <div className={`h-48 bg-[#D41B2C]`}></div>
                       <div className="p-4">
