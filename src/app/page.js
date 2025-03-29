@@ -11,8 +11,10 @@ export default function Home() {
   const [formData, setFormData] = useState({
     title: '',
     date: '',
-    description: ''
+    description: '',
+    imageUrl: null
   });
+  const [imagePreview, setImagePreview] = useState(null);
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -28,6 +30,52 @@ export default function Home() {
       setEvents(data);
     } catch (error) {
       console.error('Error fetching events:', error);
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      return;
+    }
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload image
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const data = await response.json();
+      // Store the complete data URL
+      setFormData(prev => ({ ...prev, imageUrl: data.url }));
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image');
     }
   };
 
@@ -53,7 +101,8 @@ export default function Home() {
       }
 
       // Clear form and refresh events
-      setFormData({ title: '', date: '', description: '' });
+      setFormData({ title: '', date: '', description: '', imageUrl: null });
+      setImagePreview(null);
       fetchEvents();
       setActiveTab('upcoming');
     } catch (error) {
@@ -248,7 +297,19 @@ export default function Home() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events.map((event) => (
                       <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-[#D41B2C]">
-                        <div className={`h-48 bg-[#D41B2C]`}></div>
+                        <div className={`h-48 ${event.imageUrl ? '' : 'bg-[#D41B2C]'}`}>
+                          {event.imageUrl && (
+                            <img
+                              src={event.imageUrl}
+                              alt={event.title}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                console.error('Image failed to load:', event.imageUrl);
+                                e.target.src = ''; // Clear the source on error
+                              }}
+                            />
+                          )}
+                        </div>
                         <div className="p-4">
                           <h3 className="text-xl font-semibold mb-2 text-black">{event.title}</h3>
                           <p className="text-black mb-2">Date: {new Date(event.date).toLocaleDateString()}</p>
@@ -303,6 +364,38 @@ export default function Home() {
                           required
                         ></textarea>
                       </div>
+                      <div>
+                        <label className="block text-sm font-medium text-black mb-2">Event Image</label>
+                        <div className="space-y-2">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                          />
+                          {imagePreview && (
+                            <div className="relative">
+                              <img
+                                src={imagePreview}
+                                alt="Preview"
+                                className="w-full h-48 object-cover rounded-lg"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setImagePreview(null);
+                                  setFormData(prev => ({ ...prev, imageUrl: null }));
+                                }}
+                                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                       <button
                         type="submit"
                         disabled={isLoading}
@@ -325,7 +418,7 @@ export default function Home() {
       <footer className="bg-black mt-auto relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2024 EventHub. All rights reserved.</p>
+            <p>&copy; 2025 EventHub. All rights reserved.</p>
           </div>
         </div>
       </footer>
