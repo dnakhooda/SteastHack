@@ -72,7 +72,7 @@ export default function Home() {
           submit: 'Invalid email or password'
         });
       } else {
-        router.push('/dashboard');
+        router.push('/');
       }
     } catch (error) {
       setErrors({
