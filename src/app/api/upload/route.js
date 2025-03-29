@@ -44,16 +44,24 @@ export async function POST(request) {
     const buffer = Buffer.from(bytes);
     const base64 = buffer.toString('base64');
     
-    // Return both the data URL and the base64 string
+    // Create the data URL
+    const dataUrl = `data:${file.type};base64,${base64}`;
+
+    // Log the response for debugging
+    console.log('Image uploaded successfully:', {
+      type: file.type,
+      size: file.size,
+      dataUrlLength: dataUrl.length
+    });
+
     return NextResponse.json({ 
-      url: `data:${file.type};base64,${base64}`,
-      base64: base64,
-      type: file.type
+      url: dataUrl,
+      success: true
     });
   } catch (error) {
     console.error('Error uploading file:', error);
     return NextResponse.json(
-      { error: 'Failed to upload file' },
+      { error: 'Failed to upload file', details: error.message },
       { status: 500 }
     );
   }

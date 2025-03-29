@@ -71,11 +71,25 @@ export default function Home() {
       }
 
       const data = await response.json();
+      
+      if (!data.success || !data.url) {
+        throw new Error('Invalid response from server');
+      }
+
       // Store the complete data URL
       setFormData(prev => ({ ...prev, imageUrl: data.url }));
+      
+      // Log for debugging
+      console.log('Image uploaded successfully:', {
+        imageUrl: data.url.substring(0, 50) + '...',
+        formData: { ...formData, imageUrl: data.url }
+      });
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert('Failed to upload image');
+      alert('Failed to upload image: ' + error.message);
+      // Clear the preview and form data on error
+      setImagePreview(null);
+      setFormData(prev => ({ ...prev, imageUrl: null }));
     }
   };
 
@@ -88,17 +102,39 @@ export default function Home() {
 
     setIsLoading(true);
     try {
+      // Log the form data before sending
+      console.log('Creating event with data:', {
+        ...formData,
+        imageUrl: formData.imageUrl ? formData.imageUrl.substring(0, 50) + '...' : null
+      });
+
+      // Ensure we're sending the complete form data
+      const eventData = {
+        title: formData.title,
+        date: formData.date,
+        description: formData.description,
+        imageUrl: formData.imageUrl, // Make sure we're sending the imageUrl
+      };
+
       const response = await fetch('/api/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(eventData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create event');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create event');
       }
+
+      const createdEvent = await response.json();
+      console.log('Event created successfully:', {
+        id: createdEvent.id,
+        title: createdEvent.title,
+        imageUrl: createdEvent.imageUrl ? createdEvent.imageUrl.substring(0, 50) + '...' : null
+      });
 
       // Clear form and refresh events
       setFormData({ title: '', date: '', description: '', imageUrl: null });
@@ -107,6 +143,7 @@ export default function Home() {
       setActiveTab('upcoming');
     } catch (error) {
       console.error('Error creating event:', error);
+      alert('Failed to create event: ' + error.message);
     } finally {
       setIsLoading(false);
     }
