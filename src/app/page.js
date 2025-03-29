@@ -15,8 +15,6 @@ export default function Home() {
     router.push('/login');
   }
 
-  const router = useRouter();
-
   const handleJoinEvent = (eventId) => {
     router.push(`/event/${eventId}`);
   };
