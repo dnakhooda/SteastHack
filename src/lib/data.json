@@ -1,0 +1,26 @@
+{
+    "users": {
+      "alovelace": {
+        "name": "Ada Lovelace",
+        "groups": {
+           "techpioneers": true,
+           "womentechmakers": true
+        }
+      }
+      
+    },
+    "event": {
+      "id": {
+        "title": "....",
+        "date": "....",
+        "time": "....",
+        "description": "....",
+        "location": "....",
+        "imageURL": "....",
+        "creatorId": "....",
+        "creatorName": "....",
+        "createdAt": "....",
+        "attendees": []
+      }
+    }
+  }
