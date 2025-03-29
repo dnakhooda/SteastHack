@@ -24,6 +24,21 @@ export async function POST(request) {
       );
     }
 
+    // Check for duplicate event titles
+    const existingEvents = getAllEvents();
+    const isDuplicate = existingEvents.some(
+      (event) => event.title.toLowerCase() === title.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      return NextResponse.json(
+        { error: "An event with this title already exists" },
+        { status: 400 }
+      );
+    }
+
+    console.log("Session ID:", session.user.id);
+
     const event = createEvent({
       title,
       date,

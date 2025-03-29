@@ -15,6 +15,17 @@ export default function EventPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const isEventOwner = session?.user?.id === eventData?.creatorId;
+  console.log("Creator ID:", eventData?.creatorId);
+  console.log("Session ID:", session?.user?.id);
+
+  // Check if event is in the past
+  const isPastEvent = (date, time) => {
+    const now = new Date();
+    const eventDateTime = new Date(`${date}T${time}`);
+    return eventDateTime < now;
+  };
+
   const fetchUserDetails = async (userId) => {
     try {
       const response = await fetch(`/api/users?userId=${userId}`);
@@ -64,6 +75,7 @@ export default function EventPage() {
           image: event.imageUrl || "/krentzman-quad.png",
           description: event.description,
           creator: event.creatorName,
+          creatorId: event.creatorId,
           date: event.date,
           time: event.time,
           location: event.location,
@@ -133,11 +145,55 @@ export default function EventPage() {
           participants: attendeesWithDetails,
         }));
       }
-
-      alert("Successfully joined the event!");
     } catch (error) {
       console.error("Error joining event:", error);
       alert("Failed to join event: " + error.message);
+    }
+  };
+
+  const handleRemoveParticipant = async (userId) => {
+    if (!isEventOwner) return;
+
+    try {
+      const response = await fetch(`/api/events/${eventData.id}/remove`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to remove participant");
+      }
+
+      // Refresh event data
+      const updatedResponse = await fetch("/api/events");
+      const events = await updatedResponse.json();
+      const updatedEvent = events.find((e) => e.id === eventData.id);
+
+      if (updatedEvent) {
+        // Fetch user details for all attendees
+        const attendeesWithDetails = await Promise.all(
+          updatedEvent.attendees.map(async (userId) => {
+            const userDetails = await fetchUserDetails(userId);
+            return {
+              name: userDetails?.name || "Unknown User",
+              username: userDetails?.email || "@unknown",
+            };
+          })
+        );
+
+        setEventData((prev) => ({
+          ...prev,
+          attendees: updatedEvent.attendees,
+          participants: attendeesWithDetails,
+        }));
+      }
+    } catch (error) {
+      console.error("Error removing participant:", error);
+      alert("Failed to remove participant: " + error.message);
     }
   };
 
@@ -230,7 +286,15 @@ export default function EventPage() {
                   {new Date(eventData.date).toLocaleDateString()}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-semibold">Time:</span> {eventData.time}
+                  <span className="font-semibold">Time:</span>{" "}
+                  {new Date(`2000-01-01T${eventData.time}`).toLocaleTimeString(
+                    [],
+                    {
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    }
+                  )}
                 </p>
                 <p className="text-gray-600">
                   <span className="font-semibold">Location:</span>{" "}
@@ -244,14 +308,20 @@ export default function EventPage() {
 
               <button
                 onClick={handleSignUp}
-                disabled={isSignedUp}
+                disabled={
+                  isSignedUp || isPastEvent(eventData.date, eventData.time)
+                }
                 className={`w-full py-4 px-6 rounded-lg text-white font-bold text-lg transition ${
-                  isSignedUp
+                  isSignedUp || isPastEvent(eventData.date, eventData.time)
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-[#D41B2C] hover:bg-[#B31824]"
                 }`}
               >
-                {isSignedUp ? "Already Signed Up" : "Sign Up for Event"}
+                {isSignedUp
+                  ? "Already Signed Up"
+                  : isPastEvent(eventData.date, eventData.time)
+                  ? "Event Has Passed"
+                  : "Sign Up for Event"}
               </button>
             </div>
           </div>
@@ -264,17 +334,41 @@ export default function EventPage() {
                 {eventData.participants.map((participant, index) => (
                   <div
                     key={index}
-                    className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg"
                   >
-                    <div className="w-10 h-10 bg-[#D41B2C] rounded-full flex items-center justify-center text-white font-semibold">
-                      {participant.name.charAt(0)}
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-[#D41B2C] rounded-full flex items-center justify-center text-white font-semibold">
+                        {participant.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-medium">{participant.name}</p>
+                        <p className="text-sm text-gray-600">
+                          {participant.username}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">{participant.name}</p>
-                      <p className="text-sm text-gray-600">
-                        {participant.username}
-                      </p>
-                    </div>
+                    {isEventOwner && (
+                      <button
+                        onClick={() =>
+                          handleRemoveParticipant(eventData.attendees[index])
+                        }
+                        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
+                        title="Remove participant"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
