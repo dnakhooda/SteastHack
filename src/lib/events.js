@@ -1,7 +1,7 @@
 // In-memory storage for events
 let events = [];
 
-// Load events from localStorage on initialization
+// Load events from localStorage on initialization (client-side only)
 if (typeof window !== "undefined") {
   try {
     const storedEvents = localStorage.getItem("events");
@@ -14,7 +14,7 @@ if (typeof window !== "undefined") {
   }
 }
 
-// Helper function to save events to localStorage
+// Helper function to save events to localStorage (client-side only)
 function saveEvents() {
   if (typeof window !== "undefined") {
     try {
@@ -52,6 +52,7 @@ export function getAllEvents() {
 // Helper function to get event by ID
 export function getEventById(id) {
   const event = events.find((event) => event.id === id);
+  console.log("Events:", events);
   console.log("Getting event by ID:", { id, found: !!event });
   return event;
 }
@@ -105,16 +106,58 @@ export async function removeAttendee(eventId, userId) {
   event.attendees = event.attendees.filter((id) => id !== userId);
   console.log("Updated attendees:", event.attendees);
 
-  // Save the updated events list to localStorage if available
-  if (typeof window !== "undefined" && window.localStorage) {
-    try {
-      const events = JSON.parse(localStorage.getItem("events") || "[]");
-      const updatedEvents = events.map((e) => (e.id === eventId ? event : e));
-      localStorage.setItem("events", JSON.stringify(updatedEvents));
-    } catch (error) {
-      console.error("Error saving to localStorage:", error);
-    }
+  // Update the event in the events array
+  const eventIndex = events.findIndex((e) => e.id === eventId);
+  if (eventIndex !== -1) {
+    events[eventIndex] = event;
   }
 
+  // Save to localStorage if available
+  saveEvents();
+
   return true;
+}
+
+// Helper function to delete an event
+export async function deleteEvent(eventId) {
+  console.log("Attempting to delete event:", eventId);
+  console.log("Current events:", events);
+
+  // First check if the event exists
+  const event = getEventById(eventId);
+  if (!event) {
+    console.error("Event not found:", eventId);
+    throw new Error("Event not found");
+  }
+
+  // Find the event index in the in-memory array
+  const eventIndex = events.findIndex((e) => e.id === eventId);
+  if (eventIndex === -1) {
+    console.error("Event not found in array:", eventId);
+    throw new Error("Event not found");
+  }
+
+  // Remove the event from the in-memory array
+  events.splice(eventIndex, 1);
+  console.log("Event deleted successfully. Remaining events:", events);
+
+  // Save to localStorage if available
+  saveEvents();
+
+  return true;
+}
+
+// Initialize events from localStorage if available
+export function initializeEvents() {
+  if (typeof window !== "undefined") {
+    try {
+      const storedEvents = localStorage.getItem("events");
+      if (storedEvents) {
+        events = JSON.parse(storedEvents);
+        console.log("Initialized events from localStorage:", events);
+      }
+    } catch (error) {
+      console.error("Error initializing events:", error);
+    }
+  }
 }

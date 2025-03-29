@@ -4,6 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Nav from "@/componenets/Nav";
+import { initializeEvents } from "@/lib/events";
 
 export default function EventPage() {
   const router = useRouter();
@@ -14,6 +15,11 @@ export default function EventPage() {
   const [eventData, setEventData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Initialize events when the component mounts
+  useEffect(() => {
+    initializeEvents();
+  }, []);
 
   const isEventOwner = session?.user?.id === eventData?.creatorId;
   console.log("Creator ID:", eventData?.creatorId);
@@ -211,6 +217,41 @@ export default function EventPage() {
     }
   };
 
+  const handleDeleteEvent = async () => {
+    if (!isEventOwner) return;
+
+    if (
+      !confirm(
+        "Are you sure you want to delete this event? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
+    console.log("Delete event debug:", {
+      eventId: eventData.id,
+      eventTitle: eventData.title,
+      isEventOwner,
+    });
+
+    try {
+      const response = await fetch(`/api/events/${eventData.id}/delete`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete event");
+      }
+
+      // Redirect to home page after successful deletion
+      router.push("/");
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Failed to delete event: " + error.message);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -337,6 +378,15 @@ export default function EventPage() {
                   ? "Event Has Passed"
                   : "Sign Up for Event"}
               </button>
+
+              {isEventOwner && (
+                <button
+                  onClick={handleDeleteEvent}
+                  className="mt-4 w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-red-600 hover:bg-red-700"
+                >
+                  Delete Event
+                </button>
+              )}
             </div>
           </div>
 
