@@ -85,7 +85,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black relative overflow-hidden">
+    <div className="min-h-screen bg-white text-black relative overflow-hidden flex flex-col">
       <style jsx>{`
         @font-face {
           font-family: 'Big Shoulders Inline';
@@ -191,139 +191,142 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-6 py-16 relative z-10">
-        <div className="text-center">
-          <h2 className="text-6xl font-bold mb-6 text-black animate-bounce font-['Lexend']">Discover Events in Stetson East!</h2>
-          <button 
-            onClick={() => router.push('/learnmore')}
-            className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824]"
-          >
-            Learn More
-          </button>
-        </div>
-      </section>
-
-      {/* Tabs Section */}
-      <section className="container mx-auto px-6 py-8 relative z-10">
-        <div className="bg-white rounded-lg p-6 shadow-lg relative">
-          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-black via-black to-[#D41B2C] p-[2px]">
-            <div className="bg-white rounded-lg h-full w-full"></div>
+      {/* Main Content */}
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <section className="container mx-auto px-6 py-16 relative z-10">
+          <div className="text-center">
+            <h2 className="text-6xl font-bold mb-6 text-black animate-bounce font-['Lexend']">Discover Events in Stetson East!</h2>
+            <button 
+              onClick={() => router.push('/learnmore')}
+              className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824]"
+            >
+              Learn More
+            </button>
           </div>
-          <div className="relative bg-white rounded-lg p-6">
-            <div className="flex space-x-4 mb-6">
-              <button
-                onClick={() => setActiveTab('upcoming')}
-                className={`px-6 py-2 rounded-lg transition ${
-                  activeTab === 'upcoming'
-                    ? 'bg-[#D41B2C] text-white'
-                    : 'text-black hover:bg-[#D41B2C] hover:text-white'
-                }`}
-              >
-                Upcoming Events
-              </button>
-              <button
-                onClick={() => setActiveTab('past')}
-                className={`px-6 py-2 rounded-lg transition border-2 ${
-                  activeTab === 'past'
-                    ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
-                    : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
-                }`}
-              >
-                Past Events
-              </button>
-              <button
-                onClick={() => setActiveTab('create')}
-                className={`px-6 py-2 rounded-lg transition border-2 ${
-                  activeTab === 'create'
-                    ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
-                    : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
-                }`}
-              >
-                Create Event
-              </button>
-            </div>
+        </section>
 
-            {/* Tab Content */}
-            <div className="mt-8">
-              {activeTab === 'upcoming' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {events.map((event) => (
-                    <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-[#D41B2C]">
-                      <div className={`h-48 bg-[#D41B2C]`}></div>
-                      <div className="p-4">
-                        <h3 className="text-xl font-semibold mb-2 text-black">{event.title}</h3>
-                        <p className="text-black mb-2">Date: {new Date(event.date).toLocaleDateString()}</p>
-                        <p className="text-black mb-4">Created by: {event.creatorName}</p>
-                        <button
-                          onClick={() => handleJoinEvent(event.id)}
-                          className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded transition hover:bg-[#B31824]">
-                          Join Event
-                        </button>
+        {/* Tabs Section */}
+        <section className="container mx-auto px-6 py-8 relative z-10">
+          <div className="bg-white rounded-lg p-6 shadow-lg relative">
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-black via-black to-[#D41B2C] p-[2px]">
+              <div className="bg-white rounded-lg h-full w-full"></div>
+            </div>
+            <div className="relative bg-white rounded-lg p-6">
+              <div className="flex space-x-4 mb-6">
+                <button
+                  onClick={() => setActiveTab('upcoming')}
+                  className={`px-6 py-2 rounded-lg transition border-2 ${
+                    activeTab === 'upcoming'
+                      ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
+                      : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
+                  }`}
+                >
+                  Upcoming Events
+                </button>
+                <button
+                  onClick={() => setActiveTab('past')}
+                  className={`px-6 py-2 rounded-lg transition border-2 ${
+                    activeTab === 'past'
+                      ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
+                      : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
+                  }`}
+                >
+                  Past Events
+                </button>
+                <button
+                  onClick={() => setActiveTab('create')}
+                  className={`px-6 py-2 rounded-lg transition border-2 ${
+                    activeTab === 'create'
+                      ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
+                      : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
+                  }`}
+                >
+                  Create Event
+                </button>
+              </div>
+
+              {/* Tab Content */}
+              <div className="mt-8">
+                {activeTab === 'upcoming' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {events.map((event) => (
+                      <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-[#D41B2C]">
+                        <div className={`h-48 bg-[#D41B2C]`}></div>
+                        <div className="p-4">
+                          <h3 className="text-xl font-semibold mb-2 text-black">{event.title}</h3>
+                          <p className="text-black mb-2">Date: {new Date(event.date).toLocaleDateString()}</p>
+                          <p className="text-black mb-4">Created by: {event.creatorName}</p>
+                          <button
+                            onClick={() => handleJoinEvent(event.id)}
+                            className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded transition hover:bg-[#B31824]">
+                            Join Event
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
 
-              {activeTab === 'past' && (
-                <div className="text-center text-black">
-                  <p>No past events to display</p>
-                </div>
-              )}
+                {activeTab === 'past' && (
+                  <div className="text-center text-black">
+                    <p>No past events to display</p>
+                  </div>
+                )}
 
-              {activeTab === 'create' && (
-                <div className="max-w-md mx-auto">
-                  <form className="space-y-4" onSubmit={handleCreateEvent}>
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-2">Event Title</label>
-                      <input
-                        type="text"
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-2">Date</label>
-                      <input
-                        type="date"
-                        value={formData.date}
-                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                        className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-2">Description</label>
-                      <textarea
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                        rows="4"
-                        required
-                      ></textarea>
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className={`w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded-lg transition hover:bg-[#B31824] ${
-                        isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      {isLoading ? 'Creating Event...' : 'Create Event'}
-                    </button>
-                  </form>
-                </div>
-              )}
+                {activeTab === 'create' && (
+                  <div className="max-w-md mx-auto">
+                    <form className="space-y-4" onSubmit={handleCreateEvent}>
+                      <div>
+                        <label className="block text-sm font-medium text-black mb-2">Event Title</label>
+                        <input
+                          type="text"
+                          value={formData.title}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                          className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-black mb-2">Date</label>
+                        <input
+                          type="date"
+                          value={formData.date}
+                          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                          className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-black mb-2">Description</label>
+                        <textarea
+                          value={formData.description}
+                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                          className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                          rows="4"
+                          required
+                        ></textarea>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isLoading}
+                        className={`w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded-lg transition hover:bg-[#B31824] ${
+                          isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                      >
+                        {isLoading ? 'Creating Event...' : 'Create Event'}
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
       {/* Footer */}
-      <footer className="bg-black mt-16 relative z-10">
+      <footer className="bg-black mt-auto relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
             <p>&copy; 2024 EventHub. All rights reserved.</p>
