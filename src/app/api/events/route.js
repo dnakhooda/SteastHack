@@ -1,7 +1,17 @@
 import { NextResponse } from "next/server";
-import { createEvent, getAllEvents } from "@/lib/events";
+import { getAllEvents, addEvent } from "@/lib/events";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
+
+export async function GET() {
+  try {
+    const events = getAllEvents();
+    return NextResponse.json(events);
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return NextResponse.json({ error: "Failed to fetch events" }, { status: 500 });
+  }
+}
 
 export async function POST(request) {
   try {
@@ -39,35 +49,26 @@ export async function POST(request) {
 
     console.log("Session ID:", session.user.id);
 
-    const event = createEvent({
+    const newEvent = {
+      id: Date.now().toString(),
       title,
       date,
       time,
       description,
       location,
       imageUrl,
-      creatorId: session.user.id,
       creatorName: session.user.name,
-    });
+      creatorId: session.user.id,
+      attendees: [],
+      createdAt: new Date().toISOString(),
+    };
 
-    return NextResponse.json(event, { status: 201 });
+    const createdEvent = addEvent(newEvent);
+    return NextResponse.json(createdEvent, { status: 201 });
   } catch (error) {
     console.error("Error creating event:", error);
     return NextResponse.json(
       { error: "Failed to create event" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET() {
-  try {
-    const events = getAllEvents();
-    return NextResponse.json(events);
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch events" },
       { status: 500 }
     );
   }
