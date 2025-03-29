@@ -21,6 +21,22 @@ export default function Home() {
   const router = useRouter();
   const { data: session } = useSession();
 
+  // Check if event is in the past
+  const isPastEvent = (date, time) => {
+    const now = new Date();
+    const eventDateTime = new Date(`${date}T${time}`);
+    return eventDateTime < now;
+  };
+
+  // Filter events based on date
+  const getFilteredEvents = () => {
+    const now = new Date();
+    return events.filter((event) => {
+      const eventDate = new Date(event.date);
+      return activeTab === "past" ? eventDate < now : eventDate >= now;
+    });
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -274,9 +290,9 @@ export default function Home() {
 
               {/* Tab Content */}
               <div className="mt-8">
-                {activeTab === "upcoming" && (
+                {(activeTab === "upcoming" || activeTab === "past") && (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events.map((event) => (
+                    {getFilteredEvents().map((event) => (
                       <div
                         key={event.id}
                         className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-[#D41B2C]"
@@ -308,24 +324,35 @@ export default function Home() {
                           <p className="text-black mb-2">
                             Date: {new Date(event.date).toLocaleDateString()}
                           </p>
+                          <p className="text-black mb-2">
+                            Time:{" "}
+                            {new Date(
+                              `2000-01-01T${event.time}`
+                            ).toLocaleTimeString([], {
+                              hour: "numeric",
+                              minute: "2-digit",
+                              hour12: true,
+                            })}
+                          </p>
                           <p className="text-black mb-4">
                             Created by: {event.creatorName}
                           </p>
-                          <button
-                            onClick={() => handleJoinEvent(event.title)}
-                            className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded transition hover:bg-[#B31824]"
-                          >
-                            Join Event
-                          </button>
+                          {!isPastEvent(event.date, event.time) && (
+                            <button
+                              onClick={() => handleJoinEvent(event.title)}
+                              className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded transition hover:bg-[#B31824]"
+                            >
+                              Join Event
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))}
-                  </div>
-                )}
-
-                {activeTab === "past" && (
-                  <div className="text-center text-black">
-                    <p>No past events to display</p>
+                    {getFilteredEvents().length === 0 && (
+                      <div className="col-span-full text-center text-black py-8">
+                        <p>No {activeTab} events to display</p>
+                      </div>
+                    )}
                   </div>
                 )}
 
