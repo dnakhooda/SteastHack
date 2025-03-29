@@ -34,7 +34,7 @@ export default function LearnMore() {
               <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
               <button 
                 onClick={() => router.push('/login')}
-                className="bg-white hover:bg-emerald-50 text-emerald-700 font-semibold py-2 px-4 rounded-lg transition"
+                className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] font-semibold py-2 px-4 rounded-lg transition"
               >
                 Login
               </button>
