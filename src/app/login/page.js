@@ -10,7 +10,7 @@ export default function Home() {
     if (!router) {
       return;
     }
-    router.push('/login');
+    router.push('/');
   }
 
   return (
