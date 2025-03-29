@@ -1,7 +1,9 @@
 import { useSession, signOut } from "next-auth/react";
+import { useRouter } from 'next/navigation';
 
 export default function Nav() {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const handleClick = (e) => {
     e.preventDefault();
