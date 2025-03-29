@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from "react";
 import { useSession, signOut } from 'next-auth/react';
-
+import Nav from '@/componenets/Nav';
 export default function Home() {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [events, setEvents] = useState([]);
@@ -72,11 +72,25 @@ export default function Home() {
       }
 
       const data = await response.json();
+      
+      if (!data.success || !data.url) {
+        throw new Error('Invalid response from server');
+      }
+
       // Store the complete data URL
       setFormData(prev => ({ ...prev, imageUrl: data.url }));
+      
+      // Log for debugging
+      console.log('Image uploaded successfully:', {
+        imageUrl: data.url.substring(0, 50) + '...',
+        formData: { ...formData, imageUrl: data.url }
+      });
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert('Failed to upload image');
+      alert('Failed to upload image: ' + error.message);
+      // Clear the preview and form data on error
+      setImagePreview(null);
+      setFormData(prev => ({ ...prev, imageUrl: null }));
     }
   };
 
@@ -89,17 +103,39 @@ export default function Home() {
 
     setIsLoading(true);
     try {
+      // Log the form data before sending
+      console.log('Creating event with data:', {
+        ...formData,
+        imageUrl: formData.imageUrl ? formData.imageUrl.substring(0, 50) + '...' : null
+      });
+
+      // Ensure we're sending the complete form data
+      const eventData = {
+        title: formData.title,
+        date: formData.date,
+        description: formData.description,
+        imageUrl: formData.imageUrl, // Make sure we're sending the imageUrl
+      };
+
       const response = await fetch('/api/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(eventData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create event');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create event');
       }
+
+      const createdEvent = await response.json();
+      console.log('Event created successfully:', {
+        id: createdEvent.id,
+        title: createdEvent.title,
+        imageUrl: createdEvent.imageUrl ? createdEvent.imageUrl.substring(0, 50) + '...' : null
+      });
 
       // Clear form and refresh events
       setFormData({ title: '', date: '', description: '', imageUrl: null });
@@ -108,26 +144,14 @@ export default function Home() {
       setActiveTab('upcoming');
     } catch (error) {
       console.error('Error creating event:', error);
+      alert('Failed to create event: ' + error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    if (!router) {
-      return;
-    }
-    router.push('/login');
-  }
-
   const handleJoinEvent = (eventTitle) => {
     router.push(`/events/${eventTitle}`);
-  };
-
-  const handleSignOut = async () => {
-    await signOut({ redirect: false });
-    router.push(`/`);
   };
 
   return (
@@ -191,51 +215,7 @@ export default function Home() {
       <div className="background-image" />
       
       {/* Header */}
-      <header className="h-20 bg-gradient-to-r from-black via-black to-[#D41B2C] shadow-lg relative z-10">
-        <div className="container mx-auto px-0 py-4">
-          <div className="flex items-center justify-between">
-            <button className="flex items-center space-x-6" onClick={() => router.push('/')}>
-              <div className="w-12 h-12 bg-[#D41B2C] flex items-center justify-center">
-                <span className="text-white text-4xl font-serif font-light tracking-tighter leading-none" style={{ fontFamily: 'Times New Roman' }}>N</span>
-              </div>
-              <h1 className="text-3xl font-bold text-white">SteastHub</h1>
-            </button>
-            <nav className="space-x-8">
-              <a href="/" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">Home</a>
-              <a href="/about" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">About</a>
-              <a href="/contact" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">Contact</a>
-              {session ? (
-                <>
-                  <span className="text-white text-lg font-medium">
-                    Welcome, {session.user.name}
-                  </span>
-                  <button 
-                    onClick={handleSignOut}
-                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button 
-                    onClick={handleClick}
-                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
-                  >
-                    Login
-                  </button>
-                  <button 
-                    onClick={() => router.push('/signup')}
-                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
-                  >
-                    Sign Up
-                  </button>
-                </>
-              )}
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Nav />
 
       {/* Main Content */}
       <main className="flex-grow">
@@ -419,7 +399,7 @@ export default function Home() {
       <footer className="bg-black mt-auto relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2025 SteastHub. All rights reserved.</p>
+            <p>&copy; 2025 Stetson Social. All rights reserved.</p>
           </div>
         </div>
       </footer>

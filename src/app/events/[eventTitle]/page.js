@@ -3,6 +3,7 @@
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 import { useSession, signOut } from 'next-auth/react';
+import Nav from '@/componenets/Nav';
 
 export default function EventPage() {
   const router = useRouter();
@@ -67,44 +68,7 @@ export default function EventPage() {
 
       <div className="background-image" />
       
-      {/* Header */}
-      <header className="h-20 bg-gradient-to-r from-black via-black to-[#D41B2C] shadow-lg relative z-10">
-        <div className="container mx-auto px-0 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <div className="w-12 h-12 bg-[#D41B2C] flex items-center justify-center">
-                <span className="text-white text-4xl font-serif font-light tracking-tighter leading-none" style={{ fontFamily: 'Times New Roman' }}>N</span>
-              </div>
-              <h1 className="text-3xl font-bold text-white">SteastHub</h1>
-            </div>
-            <nav className="space-x-8">
-              <a href="/" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">Home</a>
-              <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">About</a>
-              <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1">Contact</a>
-              {session ? (
-                <>
-                  <span className="text-white text-lg font-medium">
-                    Welcome, {session.user.name}
-                  </span>
-                  <button 
-                    onClick={handleSignOut}
-                    className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <button 
-                  onClick={() => router.push('/login')}
-                  className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] hover:text-white font-semibold py-2 px-4 rounded-lg transition"
-                >
-                  Login
-                </button>
-              )}
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Nav />
 
       {/* Event Content */}
       <div className="container mx-auto px-6 py-8 relative z-10">
@@ -180,7 +144,7 @@ export default function EventPage() {
       <footer className="bg-black mt-16 relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2024 SteastHub. All rights reserved.</p>
+            <p>&copy; 2024 Stetson Social. All rights reserved.</p>
           </div>
         </div>
       </footer>

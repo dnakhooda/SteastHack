@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
+import Nav from '@/componenets/Nav';
 
 export default function LearnMore() {
   const router = useRouter();
@@ -18,50 +19,22 @@ export default function LearnMore() {
         }
       `}</style>
 
-      {/* Header */}
-      <header className="h-20 bg-gradient-to-r from-black via-black to-[#D41B2C] shadow-lg">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <button className="flex items-center space-x-6" onClick={() => router.push('/')}>
-              <div className="w-12 h-12 bg-[#D41B2C] flex items-center justify-center">
-                <span className="text-white text-4xl font-serif font-light tracking-tighter leading-none" style={{ fontFamily: 'Times New Roman' }}>N</span>
-              </div>
-              <h1 className="text-3xl font-bold text-white">SteastHub</h1>
-            </button>
-            <nav className="space-x-8">
-              <button 
-                onClick={() => router.push('/')}
-                className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide"
-              >
-                Home
-              </button>
-              <a href="/about" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
-              <a href="/contact" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
-              <button 
-                onClick={() => router.push('/login')}
-                className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] font-semibold py-2 px-4 rounded-lg transition"
-              >
-                Login
-              </button>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Nav />
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8 text-center text-black animate-float">Welcome to SteastHub</h1>
+          <h1 className="text-4xl font-bold mb-8 text-center text-black animate-float">Welcome to Stetson Social</h1>
           
           <div className="space-y-12">
             {/* About Section */}
             <section className="bg-white rounded-lg p-8 shadow-lg border-2 border-[#D41B2C]">
-              <h2 className="text-2xl font-bold mb-4 text-[#D41B2C]">About SteastHub</h2>
-              <p className="text-lg text-gray-700 mb-4">
-                SteastHub is your one-stop platform for discovering and creating events in Stetson East. We connect Northeastern students with exciting opportunities to engage with their community.
+              <h2 className="text-2xl font-bold mb-4 text-[#D41B2C]">About Stetson Social</h2>
+              <p className="text-gray-700 mb-6">
+                Stetson Social is your one-stop platform for discovering and creating events in Stetson East. We connect Northeastern students with exciting opportunities to engage with their community.
               </p>
-              <p className="text-lg text-gray-700">
-                Whether you're looking to join existing events or create your own, SteastHub makes it easy to stay connected with your fellow students.
+              <p className="text-gray-700 mb-8">
+                Whether you're looking to join existing events or create your own, Stetson Social makes it easy to stay connected with your fellow students.
               </p>
             </section>
 
@@ -126,7 +99,7 @@ export default function LearnMore() {
       <footer className="bg-black mt-16">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2024 SteastHub. All rights reserved.</p>
+            <p>&copy; 2024 Stetson Social. All rights reserved.</p>
           </div>
         </div>
       </footer>

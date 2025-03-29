@@ -15,7 +15,7 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { title, date, description } = body;
+    const { title, date, description, imageUrl } = body;
 
     if (!title || !date || !description) {
       return NextResponse.json(
@@ -24,10 +24,21 @@ export async function POST(request) {
       );
     }
 
+    // Log the incoming data for debugging
+    console.log('Creating event with data:', {
+      title,
+      date,
+      description,
+      imageUrl: imageUrl ? imageUrl.substring(0, 50) + '...' : null,
+      creatorId: session.user.id,
+      creatorName: session.user.name
+    });
+
     const event = createEvent({
       title,
       date,
       description,
+      imageUrl,
       creatorId: session.user.id,
       creatorName: session.user.name,
     });
