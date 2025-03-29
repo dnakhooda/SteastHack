@@ -6,17 +6,15 @@ import { joinEvent } from "@/lib/events";
 export async function POST(request, context) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session) {
       return NextResponse.json(
-        { error: "You must be logged in to join an event" },
+        { error: "You must be logged in to join events" },
         { status: 401 }
       );
     }
 
-    const { eventId } = await context.params;
-    const userId = session.user.id;
-
+    const params = await context.params;
+    const eventId = params.eventId;
     if (!eventId) {
       return NextResponse.json(
         { error: "Event ID is required" },
@@ -24,15 +22,16 @@ export async function POST(request, context) {
       );
     }
 
-    const success = joinEvent(eventId, userId);
+    console.log("Debug - Joining event:", {
+      eventId,
+      userId: session.user.id,
+    });
 
+    const success = await joinEvent(eventId, session.user.id);
     if (!success) {
       return NextResponse.json(
-        {
-          error:
-            "Failed to join event. Event may not exist or you may already be joined.",
-        },
-        { status: 400 }
+        { error: "Failed to join event" },
+        { status: 500 }
       );
     }
 
@@ -40,7 +39,7 @@ export async function POST(request, context) {
   } catch (error) {
     console.error("Error joining event:", error);
     return NextResponse.json(
-      { error: "Failed to join event" },
+      { error: error.message || "Failed to join event" },
       { status: 500 }
     );
   }
