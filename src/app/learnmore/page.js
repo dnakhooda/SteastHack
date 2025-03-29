@@ -35,7 +35,7 @@ export default function LearnMore() {
               >
                 Home
               </button>
-              <a href="/learnmore" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
+              <a href="/about" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
               <a href="/contact" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
               <button 
                 onClick={() => router.push('/login')}
