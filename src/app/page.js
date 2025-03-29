@@ -77,7 +77,7 @@ export default function Home() {
           color: #D41B2C;
         }
         .northeastern-red-bg {
-          background-color: #D41B2C;
+          background-color: #000000;
         }
         .northeastern-red-border {
           border-color: #D41B2C;
