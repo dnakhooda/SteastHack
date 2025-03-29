@@ -275,34 +275,40 @@ export default function Home() {
               {/* Tab Content */}
               <div className="mt-8">
                 {activeTab === 'upcoming' && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events.map((event) => (
-                      <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-[#D41B2C]">
-                        <div className={`h-48 ${event.imageUrl ? '' : 'bg-[#D41B2C]'}`}>
-                          {event.imageUrl && (
-                            <img
-                              src={event.imageUrl}
-                              alt={event.title}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                console.error('Image failed to load:', event.imageUrl);
-                                e.target.src = ''; // Clear the source on error
-                              }}
-                            />
-                          )}
-                        </div>
-                        <div className="p-4">
-                          <h3 className="text-xl font-semibold mb-2 text-black">{event.title}</h3>
-                          <p className="text-black mb-2">Date: {new Date(event.date).toLocaleDateString()}</p>
-                          <p className="text-black mb-4">Created by: {event.creatorName}</p>
-                          <button
-                            onClick={() => handleJoinEvent(event.title)}
-                            className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded transition hover:bg-[#B31824]">
-                            Join Event
-                          </button>
-                        </div>
+                  <div className="w-full h-full flex flex-col items-center">
+                    {events.length === 0 ? (
+                      <div className="w-full h-full flex flex-col items-center">
+                        <p>No upcoming events to display</p>
                       </div>
-                    ))}
+                    ) : (
+                      events.map((event) => (
+                        <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-[#D41B2C]">
+                          <div className={`h-48 ${event.imageUrl ? '' : 'bg-[#D41B2C]'}`}>
+                            {event.imageUrl && (
+                              <img
+                                src={event.imageUrl}
+                                alt={event.title}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  console.error('Image failed to load:', event.imageUrl);
+                                  e.target.src = ''; // Clear the source on error
+                                }}
+                              />
+                            )}
+                          </div>
+                          <div className="p-4">
+                            <h3 className="text-xl font-semibold mb-2 text-black">{event.title}</h3>
+                            <p className="text-black mb-2">Date: {new Date(event.date).toLocaleDateString()}</p>
+                            <p className="text-black mb-4">Created by: {event.creatorName}</p>
+                            <button
+                              onClick={() => handleJoinEvent(event.title)}
+                              className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded transition hover:bg-[#B31824]">
+                              Join Event
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 )}
 
