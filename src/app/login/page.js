@@ -87,7 +87,12 @@ export default function Home() {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 shadow-lg">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-black">Login</h2>
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-[#D41B2C] flex items-center justify-center">
+              <span className="text-white text-4xl font-serif font-light tracking-tighter leading-none" style={{ fontFamily: 'Times New Roman' }}>N</span>
+            </div>
+            <h2 className="text-2xl font-bold text-black">Login</h2>
+          </div>
           <button
             className="text-[#D41B2C] hover:text-[#B31824]"
             onClick={handleCloseClick}
