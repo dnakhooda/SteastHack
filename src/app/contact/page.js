@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useSession, signOut } from 'next-auth/react';
-import Nav from '@/componenets/Nav';
+import { useSession, signOut } from "next-auth/react";
+import Nav from "@/componenets/Nav";
 
 // Mock ambassador data - replace with real data later
 const ambassadors = [
@@ -13,50 +13,50 @@ const ambassadors = [
     name: "Ben Jeter",
     role: "Residence Director",
     image: "/ben.jpeg",
-    email: "b.jeter@northeastern.edu"
+    email: "b.jeter@northeastern.edu",
   },
   {
     id: 2,
     name: "Nicky Mosharaf",
     role: "Residence Assistant",
     image: "/nicky.jpeg",
-    email: "mosharaf.n@northeastern.edu"
+    email: "mosharaf.n@northeastern.edu",
   },
   {
     id: 3,
     name: "Johan Almanzar",
     role: "Residence Assistant",
     image: "/johan.jpeg",
-    email: "almanzar.j@northeastern.edu"
+    email: "almanzar.j@northeastern.edu",
   },
   {
     id: 4,
     name: "Krish Bansal",
     role: "Residence Assistant",
     image: "/krish.jpeg",
-    email: "bansal.krish@northeastern.edu"
+    email: "bansal.krish@northeastern.edu",
   },
   {
     id: 5,
     name: "Olivier John Ndjike Nzia",
     role: "Residence Assistant",
     image: "/olivier.jpg",
-    email: "ndjikenzia.o@northeastern.edu"
+    email: "ndjikenzia.o@northeastern.edu",
   },
   {
     id: 6,
     name: "Sophia Nguyen",
     role: "Residence Assistant",
     image: "/sophia.jpg",
-    email: "nguyen.sop@northeastern.edu"
+    email: "nguyen.sop@northeastern.edu",
   },
   {
     id: 7,
     name: "Pablo Cardona Barber",
     role: "Residence Assistant",
     image: "/pablo.jpg",
-    email: "cardonabarber.p@northeastern.edu"
-  }
+    email: "cardonabarber.p@northeastern.edu",
+  },
 ];
 
 export default function ContactPage() {
@@ -67,16 +67,15 @@ export default function ContactPage() {
   const { data: session } = useSession();
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/' });
+    await signOut({ callbackUrl: "/" });
   };
 
   const handleClick = () => {
-    router.push('/signin');
+    router.push("/signin");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically send the message to your backend
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
     setMessage("");
@@ -89,9 +88,12 @@ export default function ContactPage() {
       <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Contact Our Ambassadors</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              Contact Our Ambassadors
+            </h1>
             <p className="text-lg text-gray-600 mb-8">
-              Get in touch with our dedicated ambassadors who are here to help you with any questions or concerns.
+              Get in touch with our dedicated ambassadors who are here to help
+              you with any questions or concerns.
             </p>
           </div>
 
@@ -116,7 +118,9 @@ export default function ContactPage() {
                   </div>
                 </div>
                 <div className="p-6 text-center">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{ambassador.name}</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    {ambassador.name}
+                  </h3>
                   <p className="text-[#D41B2C] mb-4">{ambassador.role}</p>
                   <p className="text-gray-600 mb-4">{ambassador.email}</p>
                   <button
