@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from 'bcryptjs';
 import { users } from '@/lib/users';
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -12,16 +12,20 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Please enter an email and password');
+        }
+
         const user = users.find(user => user.email === credentials.email);
         
         if (!user) {
-          return null;
+          throw new Error('No user found with this email');
         }
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
         
-        if (!isValid) {
-          return null;
+        if (!isPasswordValid) {
+          throw new Error('Invalid password');
         }
 
         return {
@@ -35,6 +39,10 @@ const handler = NextAuth({
   pages: {
     signIn: '/login',
   },
+  session: {
+    strategy: "jwt",
+    secret: process.env.NEXTAUTH_SECRET,
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -43,16 +51,13 @@ const handler = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (session.user) {
         session.user.id = token.id;
       }
       return session;
     }
   },
-  session: {
-    strategy: "jwt",
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-});
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST }; 
