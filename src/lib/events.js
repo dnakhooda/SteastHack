@@ -161,3 +161,24 @@ export function initializeEvents() {
     }
   }
 }
+
+// Helper function to update an event
+export async function updateEvent(eventId, updateData) {
+  console.log("Attempting to update event:", { eventId, updateData });
+  console.log("Current events:", events);
+
+  const event = getEventById(eventId);
+  if (!event) {
+    console.error("Event not found:", eventId);
+    throw new Error("Event not found");
+  }
+
+  // Update the event with new data
+  Object.assign(event, updateData);
+  console.log("Updated event:", event);
+
+  // Save to localStorage if available
+  saveEvents();
+
+  return true;
+}

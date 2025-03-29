@@ -15,11 +15,32 @@ export default function EventPage() {
   const [eventData, setEventData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    description: "",
+    date: "",
+    time: "",
+    location: "",
+  });
 
   // Initialize events when the component mounts
   useEffect(() => {
     initializeEvents();
   }, []);
+
+  // Update edit form when event data changes
+  useEffect(() => {
+    if (eventData) {
+      setEditForm({
+        title: eventData.title,
+        description: eventData.description,
+        date: eventData.date,
+        time: eventData.time,
+        location: eventData.location,
+      });
+    }
+  }, [eventData]);
 
   const isEventOwner = session?.user?.id === eventData?.creatorId;
   console.log("Creator ID:", eventData?.creatorId);
@@ -252,6 +273,43 @@ export default function EventPage() {
     }
   };
 
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!isEventOwner) return;
+
+    try {
+      const response = await fetch(`/api/events/${eventData.id}/update`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editForm),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update event");
+      }
+
+      // Refresh event data
+      const updatedResponse = await fetch("/api/events");
+      const events = await updatedResponse.json();
+      const updatedEvent = events.find((e) => e.id === eventData.id);
+
+      if (updatedEvent) {
+        setEventData((prev) => ({
+          ...prev,
+          ...updatedEvent,
+          participants: prev.participants, // Keep existing participants
+        }));
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+      alert("Failed to update event: " + error.message);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -336,55 +394,160 @@ export default function EventPage() {
               <p className="text-gray-600 mb-6">{eventData.description}</p>
 
               <div className="space-y-4 mb-6">
-                <p className="text-gray-600">
-                  <span className="font-semibold">Date:</span>{" "}
-                  {new Date(eventData.date).toLocaleDateString()}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Time:</span>{" "}
-                  {new Date(`2000-01-01T${eventData.time}`).toLocaleTimeString(
-                    [],
-                    {
-                      hour: "numeric",
-                      minute: "2-digit",
-                      hour12: true,
-                    }
-                  )}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Location:</span>{" "}
-                  {eventData.location}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Created by:</span>{" "}
-                  {eventData.creator}
-                </p>
+                {isEditing ? (
+                  <form onSubmit={handleEditSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Title
+                      </label>
+                      <input
+                        type="text"
+                        value={editForm.title}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, title: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Description
+                      </label>
+                      <textarea
+                        value={editForm.description}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            description: e.target.value,
+                          })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        rows="3"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Date
+                      </label>
+                      <input
+                        type="date"
+                        value={editForm.date}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, date: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Time
+                      </label>
+                      <input
+                        type="time"
+                        value={editForm.time}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, time: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Location
+                      </label>
+                      <input
+                        type="text"
+                        value={editForm.location}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, location: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        required
+                      />
+                    </div>
+                    <div className="flex space-x-4">
+                      <button
+                        type="submit"
+                        className="flex-1 py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-[#D41B2C] hover:bg-[#B31824]"
+                      >
+                        Save Changes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsEditing(false)}
+                        className="flex-1 py-2 px-4 rounded-lg text-gray-700 font-medium text-sm transition bg-gray-200 hover:bg-gray-300"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Date:</span>{" "}
+                      {new Date(eventData.date).toLocaleDateString()}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Time:</span>{" "}
+                      {new Date(
+                        `2000-01-01T${eventData.time}`
+                      ).toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Location:</span>{" "}
+                      {eventData.location}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Created by:</span>{" "}
+                      {eventData.creator}
+                    </p>
+                  </>
+                )}
               </div>
 
-              <button
-                onClick={handleSignUp}
-                disabled={
-                  isSignedUp || isPastEvent(eventData.date, eventData.time)
-                }
-                className={`w-full py-4 px-6 rounded-lg text-white font-bold text-lg transition ${
-                  isSignedUp || isPastEvent(eventData.date, eventData.time)
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-[#D41B2C] hover:bg-[#B31824]"
-                }`}
-              >
-                {isSignedUp
-                  ? "Already Signed Up"
-                  : isPastEvent(eventData.date, eventData.time)
-                  ? "Event Has Passed"
-                  : "Sign Up for Event"}
-              </button>
+              {isEventOwner && !isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-blue-600 hover:bg-blue-700 mb-4"
+                >
+                  Edit Event
+                </button>
+              )}
 
-              {isEventOwner && (
+              {isEventOwner && !isEditing && (
                 <button
                   onClick={handleDeleteEvent}
-                  className="mt-4 w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-red-600 hover:bg-red-700"
+                  className="w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-red-600 hover:bg-red-700"
                 >
                   Delete Event
+                </button>
+              )}
+
+              {!isEventOwner && (
+                <button
+                  onClick={handleSignUp}
+                  disabled={
+                    isSignedUp || isPastEvent(eventData.date, eventData.time)
+                  }
+                  className={`w-full py-4 px-6 rounded-lg text-white font-bold text-lg transition ${
+                    isSignedUp || isPastEvent(eventData.date, eventData.time)
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-[#D41B2C] hover:bg-[#B31824]"
+                  }`}
+                >
+                  {isSignedUp
+                    ? "Already Signed Up"
+                    : isPastEvent(eventData.date, eventData.time)
+                    ? "Event Has Passed"
+                    : "Sign Up for Event"}
                 </button>
               )}
             </div>
