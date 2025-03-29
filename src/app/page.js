@@ -110,7 +110,7 @@ export default function Home() {
           background-image: url('/krentzman-quad.png');
           background-size: cover;
           background-position: center;
-          opacity: 0.50;
+          opacity: 0.70;
           filter: brightness(1.2) saturate(1.1);
           pointer-events: none;
           z-index: 0;
@@ -214,10 +214,10 @@ export default function Home() {
             <div className="flex space-x-4 mb-6">
               <button
                 onClick={() => setActiveTab('upcoming')}
-                className={`px-6 py-2 rounded-lg transition ${
+                className={`px-6 py-2 rounded-lg transition border-2 ${
                   activeTab === 'upcoming'
-                    ? 'bg-[#D41B2C] text-white'
-                    : 'text-black hover:bg-[#D41B2C] hover:text-white'
+                    ? 'bg-[#D41B2C] text-white border-[#D41B2C]'
+                    : 'text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]'
                 }`}
               >
                 Upcoming Events
