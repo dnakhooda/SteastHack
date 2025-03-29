@@ -98,7 +98,7 @@ export default function SignUp() {
         throw new Error('Login failed after registration');
       }
 
-      router.push('/dashboard');
+      router.push('/');
     } catch (error) {
       setErrors({
         submit: error.message || 'An error occurred during registration'

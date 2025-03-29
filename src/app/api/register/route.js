@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-
-// This would typically be your database
-const users = [];
+import { users } from '@/lib/users';
 
 export async function POST(request) {
   try {

@@ -1,9 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from 'bcryptjs';
-
-// This would typically be your database
-const users = [];
+import { users } from '@/lib/users';
 
 const handler = NextAuth({
   providers: [
@@ -54,6 +52,7 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
   },
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST }; 
