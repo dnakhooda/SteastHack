@@ -15,6 +15,10 @@ export default function Home() {
     router.push('/login');
   }
 
+  const handleJoinEvent = (eventId) => {
+    router.push(`/event/${eventId}`);
+  };
+
   return (
     <div className="min-h-screen bg-white text-black">
       <style jsx>{`
@@ -123,13 +127,15 @@ export default function Home() {
               {activeTab === 'upcoming' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* Event Cards */}
-                  {[1, 2, 3].map((event) => (
+                  {[1, 2, 3, 4].map((event) => (
                     <div key={event} className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-[#D41B2C]">
                       <div className={`h-48 bg-[#D41B2C]`}></div>
                       <div className="p-4">
                         <h3 className="text-xl font-semibold mb-2 text-black">Event Title {event}</h3>
                         <p className="text-black mb-4">Date: {new Date().toLocaleDateString()}</p>
-                        <button className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded transition hover:bg-[#B31824]">
+                        <button
+                        onClick={() => handleJoinEvent(event)}
+                        className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded transition hover:bg-[#B31824]">
                           Join Event
                         </button>
                       </div>
