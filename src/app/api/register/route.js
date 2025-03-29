@@ -1,4 +1,4 @@
-gimport { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 
 // This would typically be your database
