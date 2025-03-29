@@ -8,6 +8,7 @@ export function createEvent(eventData) {
     ...eventData,
     createdAt: new Date().toISOString(),
     attendees: [], // Array to store user IDs who join the event
+    imageUrl: eventData.imageUrl || null, // Store the complete data URL
   };
   events.push(newEvent);
   return newEvent;
