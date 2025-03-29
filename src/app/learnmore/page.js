@@ -22,7 +22,12 @@ export default function LearnMore() {
       <header className="h-20 bg-gradient-to-r from-black via-black to-[#D41B2C] shadow-lg">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-white">EventHub</h1>
+            <button className="flex items-center space-x-6" onClick={() => router.push('/')}>
+              <div className="w-12 h-12 bg-[#D41B2C] flex items-center justify-center">
+                <span className="text-white text-4xl font-serif font-light tracking-tighter leading-none" style={{ fontFamily: 'Times New Roman' }}>N</span>
+              </div>
+              <h1 className="text-3xl font-bold text-white">SteastHub</h1>
+            </button>
             <nav className="space-x-8">
               <button 
                 onClick={() => router.push('/')}
@@ -30,8 +35,8 @@ export default function LearnMore() {
               >
                 Home
               </button>
-              <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
-              <a href="#" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
+              <a href="/about" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">About</a>
+              <a href="/contact" className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide">Contact</a>
               <button 
                 onClick={() => router.push('/login')}
                 className="bg-white hover:bg-[#D41B2C] text-[#D41B2C] font-semibold py-2 px-4 rounded-lg transition"
@@ -46,17 +51,17 @@ export default function LearnMore() {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8 text-center text-black animate-float">Welcome to EventHub</h1>
+          <h1 className="text-4xl font-bold mb-8 text-center text-black animate-float">Welcome to SteastHub</h1>
           
           <div className="space-y-12">
             {/* About Section */}
             <section className="bg-white rounded-lg p-8 shadow-lg border-2 border-[#D41B2C]">
-              <h2 className="text-2xl font-bold mb-4 text-[#D41B2C]">About EventHub</h2>
+              <h2 className="text-2xl font-bold mb-4 text-[#D41B2C]">About SteastHub</h2>
               <p className="text-lg text-gray-700 mb-4">
-                EventHub is your one-stop platform for discovering and creating events in Stetson East. We connect Northeastern students with exciting opportunities to engage with their community.
+                SteastHub is your one-stop platform for discovering and creating events in Stetson East. We connect Northeastern students with exciting opportunities to engage with their community.
               </p>
               <p className="text-lg text-gray-700">
-                Whether you're looking to join existing events or create your own, EventHub makes it easy to stay connected with your fellow students.
+                Whether you're looking to join existing events or create your own, SteastHub makes it easy to stay connected with your fellow students.
               </p>
             </section>
 
@@ -121,7 +126,7 @@ export default function LearnMore() {
       <footer className="bg-black mt-16">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2024 EventHub. All rights reserved.</p>
+            <p>&copy; 2024 SteastHub. All rights reserved.</p>
           </div>
         </div>
       </footer>
