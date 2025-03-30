@@ -23,7 +23,7 @@ export const authOptions = {
         }
 
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-        
+
         if (!isPasswordValid) {
           throw new Error('Invalid password');
         }
@@ -45,7 +45,7 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
+      if (session.user) {
         token.id = user.id;
       }
       return token;
