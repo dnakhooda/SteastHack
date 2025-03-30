@@ -288,7 +288,7 @@ export default function Home() {
               {activeTab === "featured" && (
                 <div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    {events.slice(0, 3).map((event) => (
+                    {events.filter(event => !isPastEvent(event.date, event.time)).slice(0, 3).map((event) => (
                       <div
                         key={event.id}
                         className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-[#D41B2C]"
@@ -318,19 +318,17 @@ export default function Home() {
                           <p className="text-gray-600 mb-2">Location: {event.location}</p>
                           <p className="text-gray-700 mb-4">{event.description}</p>
                           <p className="text-gray-600 mb-4">Created by: {event.creatorName}</p>
-                          {!isPastEvent(event.date, event.time) && (
-                            <button
-                              onClick={() => handleJoinEvent(event.title)}
-                              className="w-full bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition"
-                            >
-                              Join Event
-                            </button>
-                          )}
+                          <button
+                            onClick={() => handleJoinEvent(event.title)}
+                            className="w-full bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition"
+                          >
+                            Join Event
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
-                  {events.length > 3 && (
+                  {events.filter(event => !isPastEvent(event.date, event.time)).length > 3 && (
                     <div className="text-center">
                       <button
                         onClick={() => router.push('/seemoreevents')}
@@ -340,9 +338,9 @@ export default function Home() {
                       </button>
                     </div>
                   )}
-                  {events.length === 0 && (
+                  {events.filter(event => !isPastEvent(event.date, event.time)).length === 0 && (
                     <div className="text-center text-black py-8">
-                      <p>No events to display</p>
+                      <p>No upcoming events to display</p>
                     </div>
                   )}
                 </div>
