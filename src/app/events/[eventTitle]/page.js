@@ -518,7 +518,7 @@ export default function EventPage() {
                 disabled={
                   isSignedUp || isPastEvent(eventData.date, eventData.time)
                 }
-                className={`w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-blue-600 hover:bg-blue-700 mb-4 ${
+                className={`w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-green-600 hover:bg-green-700 mb-4 ${
                   isSignedUp || isPastEvent(eventData.date, eventData.time)
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-[#D41B2C] hover:bg-[#B31824]"
