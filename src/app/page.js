@@ -338,7 +338,7 @@ export default function Home() {
                   )}
                   {events.filter(event => !isPastEvent(event.date, event.time)).length === 0 && (
                     <div className="text-center text-black py-8">
-                      <p>No upcoming events to display</p>
+                      <p className="text-xl font-semibold font-['Lexend']">No upcoming events to display</p>
                     </div>
                   )}
                 </div>
