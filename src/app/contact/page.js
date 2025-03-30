@@ -63,6 +63,7 @@ export default function ContactPage() {
   const [selectedAmbassador, setSelectedAmbassador] = useState(null);
   const [message, setMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(null);
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -79,6 +80,16 @@ export default function ContactPage() {
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
     setMessage("");
+  };
+
+  const handleCopyEmail = async (email) => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopiedEmail(email);
+      setTimeout(() => setCopiedEmail(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy email:', err);
+    }
   };
 
   return (
@@ -123,7 +134,12 @@ export default function ContactPage() {
                     {ambassador.name}
                   </h3>
                   <p className="text-[#D41B2C] mb-4">{ambassador.role}</p>
-                  <p className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition inline-block cursor-pointer">{ambassador.email}</p>
+                  <button 
+                    onClick={() => handleCopyEmail(ambassador.email)}
+                    className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition inline-block cursor-pointer relative"
+                  >
+                    {copiedEmail === ambassador.email ? 'Copied!' : ambassador.email}
+                  </button>
                 </div>
               </div>
             ))}
