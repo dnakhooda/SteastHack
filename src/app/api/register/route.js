@@ -17,6 +17,7 @@ if (!admin.apps.length) {
 }
 
 const db = admin.database();
+const auth = admin.auth();
 
 export async function POST(request) {
   try {
@@ -42,21 +43,28 @@ export async function POST(request) {
       );
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const userId = Date.now().toString();
+    // Create user in Firebase Authentication
+    const userRecord = await auth.createUser({
+      email: email,
+      password: password,
+      displayName: name,
+    });
 
-    // Create new user
+    // Hash password for database storage
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user in Realtime Database
     const newUser = {
-      id: userId,
+      id: userRecord.uid,
       email: email,
       name: name,
       admin: false,
       password: hashedPassword,
+      last_login: Date.now()
     };
 
     // Save user data to Realtime Database
-    await usersRef.child(userId).set(newUser);
+    await usersRef.child(userRecord.uid).set(newUser);
 
     return NextResponse.json({
       success: true,
@@ -69,7 +77,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error.message || 'Internal server error' },
       { status: 500 }
     );
   }
