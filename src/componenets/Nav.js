@@ -40,19 +40,19 @@ export default function Nav() {
           <nav className="space-x-8">
             <Link
               href="/"
-              className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:translate-y-[-8px] inline-block font-['Lexend']"
+              className="text-white hover:text-white transition-transform duration-0 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:-translate-y-1 inline-block font-['Lexend']"
             >
               Home
             </Link>
             <Link
               href="/about"
-              className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:translate-y-[-8px] inline-block font-['Lexend']"
+              className="text-white hover:text-white transition-transform duration-0 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:-translate-y-1 inline-block font-['Lexend']"
             >
               About
             </Link>
             <Link
               href="/contact"
-              className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:translate-y-[-8px] inline-block font-['Lexend']"
+              className="text-white hover:text-white transition-transform duration-0 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:-translate-y-1 inline-block font-['Lexend']"
             >
               Contact
             </Link>
