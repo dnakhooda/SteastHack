@@ -1,4 +1,5 @@
 import { useSession, signOut } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from 'next/navigation';
 
 export default function Nav() {
@@ -37,24 +38,24 @@ export default function Nav() {
             <h1 className="text-3xl font-bold text-white">Stetson Social</h1>
           </button>
           <nav className="space-x-8">
-            <a
+            <Link
               href="/"
               className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1 font-['Lexend']"
             >
               Home
-            </a>
-            <a
+            </Link>
+            <Link
               href="/about"
               className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1 font-['Lexend']"
             >
               About
-            </a>
-            <a
+            </Link>
+            <Link
               href="/contact"
               className="text-white hover:text-white transition-all duration-300 text-lg font-medium tracking-wide px-4 py-2 rounded-lg hover:bg-white/10 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:-translate-y-1 font-['Lexend']"
             >
               Contact
-            </a>
+            </Link>
             {session ? (
               <>
                 <span className="text-white text-lg font-medium font-['Lexend']">

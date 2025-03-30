@@ -31,7 +31,7 @@ export default function About() {
                         <section className="bg-white rounded-lg p-8 shadow-lg border-2 border-[#D41B2C]">
                             <h2 className="text-2xl font-bold mb-4 text-[#D41B2C]">Our Mission</h2>
                             <p className="text-lg text-gray-700 mb-8">
-                                At Stetson Social, we're dedicated to fostering a vibrant community within Stetson East. Our mission is to create a seamless platform that connects Northeastern students, enabling them to discover, create, and participate in exciting events right in their residence hall.
+                                At Stetson Social, we&apos;re dedicated to fostering a vibrant community within Stetson East. Our mission is to create a seamless platform that connects Northeastern students, enabling them to discover, create, and participate in exciting events right in their residence hall.
                             </p>
                         </section>
 
@@ -49,7 +49,7 @@ export default function About() {
                                     </div>
                                     <h3 className="text-xl font-bold mb-2">Dan Nakhooda</h3>
                                     <p className="text-gray-700">Developer</p>
-                                    <p className="text-sm text-gray-500 mt-2">Computer Science '28</p>
+                                    <p className="text-sm text-gray-500 mt-2">Computer Science &apos;28</p>
                                 </div>
                                 <div className="text-center">
                                     <div className="w-32 h-32 mx-auto mb-4 overflow-hidden rounded-full">
@@ -61,7 +61,7 @@ export default function About() {
                                     </div>
                                     <h3 className="text-xl font-bold mb-2">Edgar Castaneda</h3>
                                     <p className="text-gray-700">Developer</p>
-                                    <p className="text-sm text-gray-500 mt-2">Computer Science '28</p>
+                                    <p className="text-sm text-gray-500 mt-2">Computer Science &apos;28</p>
                                 </div>
                                 <div className="text-center">
                                     <div className="w-32 h-32 mx-auto mb-4 overflow-hidden rounded-full">
@@ -73,7 +73,7 @@ export default function About() {
                                     </div>
                                     <h3 className="text-xl font-bold mb-2">Giovanni Limena</h3>
                                     <p className="text-gray-700">Developer</p>
-                                    <p className="text-sm text-gray-500 mt-2">Computer Science & Computer Engineering '28</p>
+                                    <p className="text-sm text-gray-500 mt-2">Computer Science & Computer Engineering &apos;28</p>
                                 </div>
                                 <div className="text-center">
                                     <div className="w-32 h-32 mx-auto mb-4 overflow-hidden rounded-full">
@@ -85,7 +85,7 @@ export default function About() {
                                     </div>
                                     <h3 className="text-xl font-bold mb-2">Giovanni Jean</h3>
                                     <p className="text-gray-700">Developer</p>
-                                    <p className="text-sm text-gray-500 mt-2">Computer Science '28</p>
+                                    <p className="text-sm text-gray-500 mt-2">Computer Science &apos;28</p>
                                 </div>
                             </div>
                         </section>

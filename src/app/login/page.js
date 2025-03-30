@@ -150,7 +150,7 @@ export default function Home() {
         </form>
         <div className="mt-4 text-center">
           <p className="text-gray-600">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <button
               onClick={() => router.push('/signup')}
               className="text-[#D41B2C] hover:text-[#B31824] font-semibold"
