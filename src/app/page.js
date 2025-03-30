@@ -264,7 +264,7 @@ export default function Home() {
             </h2>
             <button
               onClick={() => router.push("/learnmore")}
-              className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824]"
+              className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824] mt-8"
             >
               Learn More
             </button>
