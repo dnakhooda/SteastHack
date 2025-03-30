@@ -182,3 +182,33 @@ export async function updateEvent(eventId, updateData) {
 
   return true;
 }
+
+ // Helper function to join an event
+export function joinEvent(eventId, userId) {
+  console.log("Attempting to join event:", {
+    eventId,
+    userId,
+    currentEvents: events,
+  });
+
+  const event = getEventById(eventId);
+
+  if (!event) {
+    console.error("Event not found:", eventId);
+    return false;
+  }
+
+  if (event.attendees.includes(userId)) {
+    console.log("User already joined this event:", { eventId, userId });
+    return false;
+  }
+
+  event.attendees.push(userId);
+  saveEvents();
+  console.log("Successfully joined event:", {
+    eventId,
+    userId,
+    attendees: event.attendees,
+  });
+  return true;
+}
