@@ -304,9 +304,7 @@ export default function Home() {
                               priority
                             />
                           ) : (
-                            <div className="w-full h-full bg-[#D41B2C] flex items-center justify-center">
-                              <span className="text-white text-2xl">No Image</span>
-                            </div>
+                            <div className="w-full h-full bg-[#D41B2C]"></div>
                           )}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                           <div className="absolute bottom-4 left-4">
@@ -388,9 +386,7 @@ export default function Home() {
                                 priority
                               />
                             ) : (
-                              <div className="w-full h-full bg-[#D41B2C] flex items-center justify-center">
-                                <span className="text-white text-2xl">No Image</span>
-                              </div>
+                              <div className="w-full h-full bg-[#D41B2C]"></div>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                             <div className="absolute bottom-4 left-4">
