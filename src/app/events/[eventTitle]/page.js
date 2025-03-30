@@ -513,6 +513,24 @@ export default function EventPage() {
                 )}
               </div>
 
+              <button
+                onClick={handleSignUp}
+                disabled={
+                  isSignedUp || isPastEvent(eventData.date, eventData.time)
+                }
+                className={`w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-blue-600 hover:bg-blue-700 mb-4 ${
+                  isSignedUp || isPastEvent(eventData.date, eventData.time)
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-[#D41B2C] hover:bg-[#B31824]"
+                }`}
+              >
+                {isSignedUp
+                  ? "Already Signed Up"
+                  : isPastEvent(eventData.date, eventData.time)
+                  ? "Event Has Passed"
+                  : "Sign Up for Event"}
+              </button>
+
               {isEventOwner && !isEditing && (
                 <button
                   onClick={() => setIsEditing(true)}
@@ -528,26 +546,6 @@ export default function EventPage() {
                   className="w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-red-600 hover:bg-red-700"
                 >
                   Delete Event
-                </button>
-              )}
-
-              {!isEventOwner && (
-                <button
-                  onClick={handleSignUp}
-                  disabled={
-                    isSignedUp || isPastEvent(eventData.date, eventData.time)
-                  }
-                  className={`w-full py-4 px-6 rounded-lg text-white font-bold text-lg transition ${
-                    isSignedUp || isPastEvent(eventData.date, eventData.time)
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-[#D41B2C] hover:bg-[#B31824]"
-                  }`}
-                >
-                  {isSignedUp
-                    ? "Already Signed Up"
-                    : isPastEvent(eventData.date, eventData.time)
-                    ? "Event Has Passed"
-                    : "Sign Up for Event"}
                 </button>
               )}
             </div>
