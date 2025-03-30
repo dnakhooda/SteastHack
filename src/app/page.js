@@ -182,7 +182,9 @@ export default function Home() {
             -1px -1px 0 #fff,
             1px -1px 0 #fff,
             -1px 1px 0 #fff,
-            1px 1px 0 #fff;
+            1px 1px 0 #fff,
+            0 0 10px rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         .hero-text {
