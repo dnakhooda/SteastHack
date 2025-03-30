@@ -278,8 +278,8 @@ export default function Home() {
               <div className="bg-white rounded-lg h-full w-full"></div>
             </div>
             <div className="relative bg-white rounded-lg p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-black">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-3xl font-bold text-black">
                   {activeTab === "featured" ? "Featured Events" : 
                    activeTab === "past" ? "Past Events" : 
                    "Event Creator"}
