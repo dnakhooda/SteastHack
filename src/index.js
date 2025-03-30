@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase, onValue, ref, set } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAYA38UtEURoSzEuUPXuque-Lau6EFl98I",
@@ -10,11 +11,14 @@ const firebaseConfig = {
   messagingSenderId: "926165094246",
   appId: "1:926165094246:web:98b4477669b8ab841bc2a7",
   measurementId: "G-XTQ2Q6BSW6",
-  databaseURL: "https://steast-hackathon-default-rtdb.firebaseio.com/",
+  databaseURL: "https://steast-hackathon-default-rtdb.firebaseio.com",
 };
 
 const app = initializeApp(firebaseConfig);
-const database = getDatabase();
+const database = getDatabase(app);
+const auth = getAuth(app);
+
+export { app, database, auth };
 
 function writeUserData(userId, name, email, imageUrl) {
   const reference = ref(database, 'users/' + userId);

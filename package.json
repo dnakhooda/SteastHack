@@ -12,6 +12,7 @@
     "@auth/core": "^0.34.2",
     "bcryptjs": "^3.0.2",
     "firebase": "^11.5.0",
+    "firebase-admin": "^13.2.0",
     "next": "15.2.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
