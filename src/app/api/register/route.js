@@ -1,6 +1,22 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { users } from '@/lib/users';
+import admin from 'firebase-admin';
+
+// Initialize Firebase Admin SDK
+if (!admin.apps.length) {
+  try {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: process.env.FIREBASE_DATABASE_URL,
+    });
+    console.log('Firebase Admin SDK initialized successfully');
+  } catch (error) {
+    console.error('Firebase Admin SDK initialization error:', error);
+  }
+}
+
+const db = admin.database();
 
 export async function POST(request) {
   try {
@@ -16,7 +32,10 @@ export async function POST(request) {
     }
 
     // Check if user already exists
-    if (users.find(user => user.email === email)) {
+    const usersRef = db.ref('users');
+    const snapshot = await usersRef.orderByChild('email').equalTo(email).once('value');
+    
+    if (snapshot.exists()) {
       return NextResponse.json(
         { error: 'User already exists' },
         { status: 400 }
@@ -25,17 +44,20 @@ export async function POST(request) {
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
+    const userId = Date.now().toString();
 
-    // Create user (in a real app, this would be saved to a database)
-    const user = {
-      id: Date.now().toString(),
-      email,
-      name,
+    // Create new user
+    const newUser = {
+      id: userId,
+      email: email,
+      name: name,
+      admin: false,
       password: hashedPassword,
       admin: false,
     };
 
-    users.push(user);
+    // Save user data to Realtime Database
+    await usersRef.child(userId).set(newUser);
 
     return NextResponse.json({
       success: true,
