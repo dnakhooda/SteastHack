@@ -341,7 +341,7 @@ export default function Home() {
                   {events.filter(event => !isPastEvent(event.date, event.time)).length > 3 && (
                     <div className="text-center">
                       <button
-                        onClick={() => router.push('/seemoreevents')}
+                        onClick={() => router.push('/upcomingevents')}
                         className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-bold py-3 px-8 rounded-full transition transform hover:scale-105"
                       >
                         See More Events
@@ -350,7 +350,7 @@ export default function Home() {
                   )}
                   {events.filter(event => !isPastEvent(event.date, event.time)).length === 0 && (
                     <div className="text-center text-black py-8">
-                      <p className="text-xl font-semibold font-['Lexend']">No upcoming events to display</p>
+                      <p className="text-lg font-semibold font-['Lexend']">No upcoming events to display</p>
                     </div>
                   )}
                 </div>
@@ -381,11 +381,11 @@ export default function Home() {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events.filter(event => isPastEvent(event.date, event.time)).length === 0 ? (
-                      <div className="text-center text-black">
-                        <p>No past events to display</p>
+                      <div className="text-center text-black py-8">
+                        <p className="text-lg font-semibold font-['Lexend']">No past events to display</p>
                       </div>
                     ) : (
-                      events.filter(event => isPastEvent(event.date, event.time)).map((event) => (
+                      events.filter(event => isPastEvent(event.date, event.time)).slice(0, 3).map((event) => (
                         <div key={event.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-[#D41B2C]">
                           <div className="relative h-48">
                             {event.imageUrl ? (
@@ -415,6 +415,16 @@ export default function Home() {
                       ))
                     )}
                   </div>
+                  {events.filter(event => isPastEvent(event.date, event.time)).length > 3 && (
+                    <div className="text-center mt-8">
+                      <button
+                        onClick={() => router.push('/pastevents')}
+                        className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-bold py-3 px-8 rounded-full transition transform hover:scale-105"
+                      >
+                        See All Past Events
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 
