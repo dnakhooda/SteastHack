@@ -59,7 +59,7 @@ export default function Nav() {
             {session ? (
               <>
                 <span className="text-white text-lg font-medium font-['Lexend']">
-                  Welcome, {session.user.name}
+                  Welcome, {session.user.name}!
                 </span>
                 <button
                   onClick={handleSignOut}
