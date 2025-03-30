@@ -32,6 +32,7 @@ export async function POST(request) {
       email,
       name,
       password: hashedPassword,
+      admin: false,
     };
 
     users.push(user);
@@ -42,6 +43,7 @@ export async function POST(request) {
         id: user.id,
         email: user.email,
         name: user.name,
+        admin: user.admin,
       },
     });
   } catch (error) {

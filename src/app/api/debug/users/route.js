@@ -9,6 +9,7 @@ export async function GET(request) {
       email: user.email,
       name: user.name,
       password: user.password,
+      admin: user.admin,
     }));
 
     return NextResponse.json({

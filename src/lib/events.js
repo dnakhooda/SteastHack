@@ -126,12 +126,6 @@ export function removeAttendee(eventId, userId) {
 
  // Helper function to join an event
 export function joinEvent(eventId, userId) {
-  console.log("Attempting to join event:", {
-    eventId,
-    userId,
-    currentEvents: events,
-  });
-
   const event = getEventById(eventId);
 
   if (!event) {

@@ -43,8 +43,12 @@ export default function EventPage() {
   }, [eventData]);
 
   const isEventOwner = session?.user?.id === eventData?.creatorId;
+  const isAdmin = session?.user?.admin;
+  const canManageEvent = isEventOwner || isAdmin;
+
   console.log("Creator ID:", eventData?.creatorId);
   console.log("Session ID:", session?.user?.id);
+  console.log("Is Admin:", isAdmin);
 
   // Check if event is in the past
   const isPastEvent = (date, time) => {
@@ -239,7 +243,7 @@ export default function EventPage() {
   };
 
   const handleDeleteEvent = async () => {
-    if (!isEventOwner) return;
+    if (!canManageEvent) return;
 
     if (
       !confirm(
@@ -252,7 +256,7 @@ export default function EventPage() {
     console.log("Delete event debug:", {
       eventId: eventData.id,
       eventTitle: eventData.title,
-      isEventOwner,
+      canManageEvent,
     });
 
     try {
@@ -275,7 +279,7 @@ export default function EventPage() {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    if (!isEventOwner) return;
+    if (!canManageEvent) return;
 
     try {
       const response = await fetch(`/api/events/${eventData.id}/update`, {
@@ -531,7 +535,7 @@ export default function EventPage() {
                   : "Sign Up for Event"}
               </button>
 
-              {isEventOwner && !isEditing && (
+              {canManageEvent && !isEditing && (
                 <button
                   onClick={() => setIsEditing(true)}
                   className="w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-blue-600 hover:bg-blue-700 mb-4"
@@ -540,7 +544,7 @@ export default function EventPage() {
                 </button>
               )}
 
-              {isEventOwner && !isEditing && (
+              {canManageEvent && !isEditing && (
                 <button
                   onClick={handleDeleteEvent}
                   className="w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-red-600 hover:bg-red-700"
@@ -572,7 +576,8 @@ export default function EventPage() {
                         </p>
                       </div>
                     </div>
-                    {(isEventOwner || session?.user?.id === participant.id) && (
+                    {(canManageEvent ||
+                      session?.user?.id === participant.id) && (
                       <button
                         onClick={() =>
                           handleRemoveParticipant(eventData.attendees[index])
