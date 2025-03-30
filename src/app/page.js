@@ -279,7 +279,11 @@ export default function Home() {
             </div>
             <div className="relative bg-white rounded-lg p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-black">Featured Events</h2>
+                <h2 className="text-2xl font-bold text-black">
+                  {activeTab === "featured" ? "Featured Events" : 
+                   activeTab === "past" ? "Past Events" : 
+                   "Event Creator"}
+                </h2>
                 <div className="space-x-4">
                   <button
                     onClick={() => setActiveTab("featured")}
