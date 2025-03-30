@@ -248,7 +248,7 @@ export default function Home() {
         <section className="container mx-auto px-6 py-16 relative z-10">
           <div className="text-center">
             <h2 className="text-6xl font-bold mb-6 text-black animate-bounce font-['Lexend']">
-              Discover Events in Stetson East!
+              Discover Events in Stetson East/West!
             </h2>
             <button
               onClick={() => router.push("/learnmore")}
@@ -576,7 +576,7 @@ export default function Home() {
       <footer className="bg-black mt-auto relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2025 Stetson Social. All rights reserved.</p>
+            <p>&copy; 2025 Stetson Social. All rights not reserved.</p>
           </div>
         </div>
       </footer>
