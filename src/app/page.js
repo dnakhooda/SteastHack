@@ -182,7 +182,9 @@ export default function Home() {
             -1px -1px 0 #fff,
             1px -1px 0 #fff,
             -1px 1px 0 #fff,
-            1px 1px 0 #fff;
+            1px 1px 0 #fff,
+            0 0 10px rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         .hero-text {
@@ -264,7 +266,7 @@ export default function Home() {
             </h2>
             <button
               onClick={() => router.push("/learnmore")}
-              className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824]"
+              className="bg-[#D41B2C] text-white font-bold py-3 px-8 rounded-full transition hover:bg-[#B31824] mt-8"
             >
               Learn More
             </button>
@@ -278,8 +280,12 @@ export default function Home() {
               <div className="bg-white rounded-lg h-full w-full"></div>
             </div>
             <div className="relative bg-white rounded-lg p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-black">Featured Events</h2>
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-3xl font-bold text-black">
+                  {activeTab === "featured" ? "Featured Events" : 
+                   activeTab === "past" ? "Past Events" : 
+                   "Event Creator"}
+                </h2>
                 <div className="space-x-4">
                   <button
                     onClick={() => setActiveTab("featured")}

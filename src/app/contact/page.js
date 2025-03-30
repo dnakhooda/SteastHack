@@ -63,6 +63,7 @@ export default function ContactPage() {
   const [selectedAmbassador, setSelectedAmbassador] = useState(null);
   const [message, setMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(null);
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -79,6 +80,18 @@ export default function ContactPage() {
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
     setMessage("");
+  };
+
+  const handleCopyEmail = async (email) => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopiedEmail(email);
+      setTimeout(() => {
+        setCopiedEmail(null);
+      }, 1500);
+    } catch (err) {
+      console.error('Failed to copy email:', err);
+    }
   };
 
   return (
@@ -104,14 +117,15 @@ export default function ContactPage() {
                 key={ambassador.id}
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
               >
-                <div className="relative h-64 flex justify-center items-center bg-gray-100">
-                  <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-[#D41B2C]">
+                <div className="relative h-72 flex justify-center items-center">
+                  <div className="relative h-56 w-56 rounded-full overflow-hidden border-4 border-[#D41B2C]">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#D41B2C] to-[#B31824]"></div>
                     <Image
                       src={ambassador.image}
                       alt={ambassador.name}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       priority
                       quality={100}
                     />
@@ -122,12 +136,13 @@ export default function ContactPage() {
                     {ambassador.name}
                   </h3>
                   <p className="text-[#D41B2C] mb-4">{ambassador.role}</p>
-                  <p className="text-gray-600 mb-4">{ambassador.email}</p>
-                  <button
-                    onClick={() => setSelectedAmbassador(ambassador)}
-                    className="w-full bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition"
+                  <button 
+                    onClick={() => handleCopyEmail(ambassador.email)}
+                    className={`bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition-all duration-500 ease-in-out inline-block cursor-pointer relative ${
+                      copiedEmail === ambassador.email ? 'scale-110' : 'scale-100'
+                    }`}
                   >
-                    Contact {ambassador.name}
+                    {copiedEmail === ambassador.email ? 'Copied!' : ambassador.email}
                   </button>
                 </div>
               </div>
