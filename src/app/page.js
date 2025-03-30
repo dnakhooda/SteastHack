@@ -311,7 +311,7 @@ export default function Home() {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                           <div className="absolute bottom-4 left-4">
                             <h3 className="text-xl font-semibold text-white">{event.title}</h3>
-                            <p className="text-white">{new Date(event.date).toLocaleDateString()} at {event.time}</p>
+                            <p className="text-white">{new Date(event.date).toLocaleDateString()} at {new Date(`2000-01-01T${event.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
                           </div>
                         </div>
                         <div className="p-6">
@@ -395,7 +395,7 @@ export default function Home() {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                             <div className="absolute bottom-4 left-4">
                               <h3 className="text-xl font-semibold text-white">{event.title}</h3>
-                              <p className="text-white">{new Date(event.date).toLocaleDateString()} at {event.time}</p>
+                              <p className="text-white">{new Date(event.date).toLocaleDateString()} at {new Date(`2000-01-01T${event.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
                             </div>
                           </div>
                           <div className="p-6">
