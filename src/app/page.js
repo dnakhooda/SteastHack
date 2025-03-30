@@ -4,8 +4,10 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Nav from "@/componenets/Nav";
+import Image from "next/image";
+
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("upcoming");
+  const [activeTab, setActiveTab] = useState("featured");
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,6 +23,13 @@ export default function Home() {
   const router = useRouter();
   const { data: session } = useSession();
 
+  // Check if event is in the past
+  const isPastEvent = (date, time) => {
+    const now = new Date();
+    const eventDateTime = new Date(`${date}T${time}`);
+    return eventDateTime < now;
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -28,10 +37,28 @@ export default function Home() {
   const fetchEvents = async () => {
     try {
       const response = await fetch("/api/events");
+      if (!response.ok) {
+        throw new Error("Failed to fetch events");
+      }
       const data = await response.json();
-      setEvents(data);
+      // Sort events by date
+      const sortedEvents = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+      setEvents(sortedEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
+      // If API fails, try to get events from localStorage
+      if (typeof window !== "undefined") {
+        try {
+          const storedEvents = localStorage.getItem("events");
+          if (storedEvents) {
+            const parsedEvents = JSON.parse(storedEvents);
+            const sortedEvents = parsedEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+            setEvents(sortedEvents);
+          }
+        } catch (localError) {
+          console.error("Error loading events from localStorage:", localError);
+        }
+      }
     }
   };
 
@@ -127,7 +154,7 @@ export default function Home() {
       });
       setImagePreview(null);
       fetchEvents();
-      setActiveTab("upcoming");
+      setActiveTab("featured");
     } catch (error) {
       console.error("Error creating event:", error);
       alert("Failed to create event: " + error.message);
@@ -221,7 +248,7 @@ export default function Home() {
         <section className="container mx-auto px-6 py-16 relative z-10">
           <div className="text-center">
             <h2 className="text-6xl font-bold mb-6 text-black animate-bounce font-['Lexend']">
-              Discover Events in Stetson East!
+              Discover Events in Stetson East/West!
             </h2>
             <button
               onClick={() => router.push("/learnmore")}
@@ -232,88 +259,66 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Tabs Section */}
-        <section className="container mx-auto px-6 py-8 relative z-10">
+        {/* Featured Events Section */}
+        <section className="container mx-auto px-6 py-8 relative z-20">
           <div className="bg-white rounded-lg p-6 shadow-lg relative">
             <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-black via-black to-[#D41B2C] p-[2px]">
               <div className="bg-white rounded-lg h-full w-full"></div>
             </div>
             <div className="relative bg-white rounded-lg p-6">
-              <div className="flex space-x-4 mb-6">
-                <button
-                  onClick={() => setActiveTab("upcoming")}
-                  className={`px-6 py-2 rounded-lg transition border-2 ${
-                    activeTab === "upcoming"
-                      ? "bg-[#D41B2C] text-white border-[#D41B2C]"
-                      : "text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
-                  }`}
-                >
-                  Upcoming Events
-                </button>
-                <button
-                  onClick={() => setActiveTab("past")}
-                  className={`px-6 py-2 rounded-lg transition border-2 ${
-                    activeTab === "past"
-                      ? "bg-[#D41B2C] text-white border-[#D41B2C]"
-                      : "text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
-                  }`}
-                >
-                  Past Events
-                </button>
-                <button
-                  onClick={() => setActiveTab("create")}
-                  className={`px-6 py-2 rounded-lg transition border-2 ${
-                    activeTab === "create"
-                      ? "bg-[#D41B2C] text-white border-[#D41B2C]"
-                      : "text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
-                  }`}
-                >
-                  Create Event
-                </button>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-black">Featured Events</h2>
+                <div className="space-x-4">
+                  <button
+                    onClick={() => setActiveTab("past")}
+                    className="px-6 py-2 rounded-lg transition border-2 text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
+                  >
+                    Past Events
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("create")}
+                    className="px-6 py-2 rounded-lg transition border-2 text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
+                  >
+                    Create Event
+                  </button>
+                </div>
               </div>
 
-              {/* Tab Content */}
-              <div className="mt-8">
-                {activeTab === "upcoming" && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events.map((event) => (
+              {/* Featured Events Grid */}
+              {activeTab === "featured" && (
+                <div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    {events.filter(event => !isPastEvent(event.date, event.time)).slice(0, 3).map((event) => (
                       <div
                         key={event.id}
-                        className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-[#D41B2C]"
+                        className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-[#D41B2C]"
                       >
-                        <div
-                          className={`h-48 ${
-                            event.imageUrl ? "" : "bg-[#D41B2C]"
-                          }`}
-                        >
-                          {event.imageUrl && (
-                            <img
+                        <div className="relative h-48">
+                          {event.imageUrl ? (
+                            <Image
                               src={event.imageUrl}
                               alt={event.title}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                console.error(
-                                  "Image failed to load:",
-                                  event.imageUrl
-                                );
-                                e.target.src = ""; // Clear the source on error
-                              }}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              priority
                             />
+                          ) : (
+                            <div className="w-full h-full bg-[#D41B2C]"></div>
                           )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                          <div className="absolute bottom-4 left-4">
+                            <h3 className="text-xl font-semibold text-white">{event.title}</h3>
+                            <p className="text-white">{new Date(event.date).toLocaleDateString()} at {new Date(`2000-01-01T${event.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
+                          </div>
                         </div>
-                        <div className="p-4">
-                          <h3 className="text-xl font-semibold mb-2 text-black">
-                            {event.title}
-                          </h3>
-                          <p className="text-black mb-2">
-                            Date: {new Date(event.date).toLocaleDateString()}
-                          </p>
-                          <p className="text-black mb-4">
-                            Created by: {event.creatorName}
-                          </p>
+                        <div className="p-6">
+                          <p className="text-gray-600 mb-2">Location: {event.location}</p>
+                          <p className="text-gray-700 mb-4">{event.description}</p>
+                          <p className="text-gray-600 mb-4">Created by: {event.creatorName}</p>
                           <button
                             onClick={() => handleJoinEvent(event.title)}
-                            className="w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded transition hover:bg-[#B31824]"
+                            className="w-full bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition"
                           >
                             Join Event
                           </button>
@@ -321,155 +326,247 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-                )}
-
-                {activeTab === "past" && (
-                  <div className="text-center text-black">
-                    <p>No past events to display</p>
-                  </div>
-                )}
-
-                {activeTab === "create" && (
-                  <div className="max-w-md mx-auto">
-                    <form className="space-y-4" onSubmit={handleCreateEvent}>
-                      <div>
-                        <label className="block text-sm font-medium text-black mb-2">
-                          Event Title
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.title}
-                          onChange={(e) =>
-                            setFormData({ ...formData, title: e.target.value })
-                          }
-                          className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                          required
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-black mb-2">
-                            Date
-                          </label>
-                          <input
-                            type="date"
-                            value={formData.date}
-                            onChange={(e) =>
-                              setFormData({ ...formData, date: e.target.value })
-                            }
-                            className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-black mb-2">
-                            Time
-                          </label>
-                          <input
-                            type="time"
-                            value={formData.time}
-                            onChange={(e) =>
-                              setFormData({ ...formData, time: e.target.value })
-                            }
-                            className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-black mb-2">
-                          Location
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.location}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              location: e.target.value,
-                            })
-                          }
-                          placeholder="e.g., Stetson East Lounge"
-                          className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-black mb-2">
-                          Description
-                        </label>
-                        <textarea
-                          value={formData.description}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              description: e.target.value,
-                            })
-                          }
-                          className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                          rows="4"
-                          required
-                        ></textarea>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-black mb-2">
-                          Event Image
-                        </label>
-                        <div className="space-y-2">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
-                          />
-                          {imagePreview && (
-                            <div className="relative">
-                              <img
-                                src={imagePreview}
-                                alt="Preview"
-                                className="w-full h-48 object-cover rounded-lg"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setImagePreview(null);
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    imageUrl: null,
-                                  }));
-                                }}
-                                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="h-5 w-5"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                  {events.filter(event => !isPastEvent(event.date, event.time)).length > 3 && (
+                    <div className="text-center">
                       <button
-                        type="submit"
-                        disabled={isLoading}
-                        className={`w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded-lg transition hover:bg-[#B31824] ${
-                          isLoading ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                        onClick={() => router.push('/seemoreevents')}
+                        className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-bold py-3 px-8 rounded-full transition transform hover:scale-105"
                       >
-                        {isLoading ? "Creating Event..." : "Create Event"}
+                        See More Events
                       </button>
-                    </form>
+                    </div>
+                  )}
+                  {events.filter(event => !isPastEvent(event.date, event.time)).length === 0 && (
+                    <div className="text-center text-black py-8">
+                      <p className="text-xl font-semibold font-['Lexend']">No upcoming events to display</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Past Events Section */}
+              {activeTab === "past" && (
+                <div>
+                  <div className="flex justify-between items-center mb-6">
+                    <button
+                      onClick={() => setActiveTab("featured")}
+                      className="flex items-center text-[#D41B2C] hover:text-[#B31824] transition"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Back to Events
+                    </button>
                   </div>
-                )}
-              </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {events.filter(event => isPastEvent(event.date, event.time)).length === 0 ? (
+                      <div className="text-center text-black">
+                        <p>No past events to display</p>
+                      </div>
+                    ) : (
+                      events.filter(event => isPastEvent(event.date, event.time)).map((event) => (
+                        <div key={event.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-[#D41B2C]">
+                          <div className="relative h-48">
+                            {event.imageUrl ? (
+                              <Image
+                                src={event.imageUrl}
+                                alt={event.title}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                priority
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-[#D41B2C]"></div>
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                            <div className="absolute bottom-4 left-4">
+                              <h3 className="text-xl font-semibold text-white">{event.title}</h3>
+                              <p className="text-white">{new Date(event.date).toLocaleDateString()} at {new Date(`2000-01-01T${event.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
+                            </div>
+                          </div>
+                          <div className="p-6">
+                            <p className="text-gray-600 mb-2">Location: {event.location}</p>
+                            <p className="text-gray-700 mb-4">{event.description}</p>
+                            <p className="text-gray-600 mb-4">Created by: {event.creatorName}</p>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Create Event Form */}
+              {activeTab === "create" && (
+                <div className="max-w-md mx-auto">
+                  <div className="flex justify-between items-center mb-6">
+                    <button
+                      onClick={() => setActiveTab("featured")}
+                      className="flex items-center text-[#D41B2C] hover:text-[#B31824] transition"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Back to Events
+                    </button>
+                  </div>
+                  <form className="space-y-4" onSubmit={handleCreateEvent}>
+                    <div>
+                      <label className="block text-sm font-medium text-black mb-2">
+                        Event Title
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) =>
+                          setFormData({ ...formData, title: e.target.value })
+                        }
+                        className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                        required
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-black mb-2">
+                          Date
+                        </label>
+                        <input
+                          type="date"
+                          value={formData.date}
+                          onChange={(e) =>
+                            setFormData({ ...formData, date: e.target.value })
+                          }
+                          className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-black mb-2">
+                          Time
+                        </label>
+                        <input
+                          type="time"
+                          value={formData.time}
+                          onChange={(e) =>
+                            setFormData({ ...formData, time: e.target.value })
+                          }
+                          className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-black mb-2">
+                        Location
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.location}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            location: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., Stetson East Lounge"
+                        className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-black mb-2">
+                        Description
+                      </label>
+                      <textarea
+                        value={formData.description}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            description: e.target.value,
+                          })
+                        }
+                        className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                        rows="4"
+                        required
+                      ></textarea>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-black mb-2">
+                        Event Image
+                      </label>
+                      <div className="space-y-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="w-full px-4 py-2 rounded-lg border-2 border-black bg-white focus:outline-none focus:border-[#D41B2C] text-black"
+                        />
+                        {imagePreview && (
+                          <div className="relative">
+                            <img
+                              src={imagePreview}
+                              alt="Preview"
+                              className="w-full h-48 object-cover rounded-lg"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setImagePreview(null);
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  imageUrl: null,
+                                }));
+                              }}
+                              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className={`w-full bg-[#D41B2C] text-white font-bold py-2 px-4 rounded-lg transition hover:bg-[#B31824] ${
+                        isLoading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                    >
+                      {isLoading ? "Creating Event..." : "Create Event"}
+                    </button>
+                  </form>
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -479,7 +576,7 @@ export default function Home() {
       <footer className="bg-black mt-auto relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2025 Stetson Social. All rights reserved.</p>
+            <p>&copy; 2025 Stetson Social. All rights not reserved.</p>
           </div>
         </div>
       </footer>

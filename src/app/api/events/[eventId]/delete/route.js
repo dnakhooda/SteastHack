@@ -1,20 +1,28 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]/route";
-import { joinEvent } from "@/lib/events";
+import { deleteEvent, getEventById, getAllEvents } from "@/lib/events";
 
-export async function POST(request, context) {
+export async function DELETE(request, context) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json(
-        { error: "You must be logged in to join events" },
+        { error: "You must be logged in to delete events" },
         { status: 401 }
       );
     }
 
     const params = await context.params;
     const eventId = params.eventId;
+
+    console.log("Delete request debug:", {
+      eventId,
+      sessionUserId: session.user.id,
+      params,
+      currentEvents: getAllEvents(),
+    });
+
     if (!eventId) {
       return NextResponse.json(
         { error: "Event ID is required" },
@@ -22,24 +30,19 @@ export async function POST(request, context) {
       );
     }
 
-    console.log("Debug - Joining event:", {
-      eventId,
-      userId: session.user.id,
-    });
-
-    const success = await joinEvent(eventId, session.user.id);
+    const success = await deleteEvent(eventId);
     if (!success) {
       return NextResponse.json(
-        { error: "Failed to join event" },
+        { error: "Failed to delete event" },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error joining event:", error);
+    console.error("Error deleting event:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to join event" },
+      { error: error.message || "Failed to delete event" },
       { status: 500 }
     );
   }

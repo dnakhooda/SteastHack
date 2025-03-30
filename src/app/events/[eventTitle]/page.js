@@ -4,6 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Nav from "@/componenets/Nav";
+import { initializeEvents } from "@/lib/events";
 
 export default function EventPage() {
   const router = useRouter();
@@ -14,6 +15,43 @@ export default function EventPage() {
   const [eventData, setEventData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    description: "",
+    date: "",
+    time: "",
+    location: "",
+  });
+
+  // Initialize events when the component mounts
+  useEffect(() => {
+    initializeEvents();
+  }, []);
+
+  // Update edit form when event data changes
+  useEffect(() => {
+    if (eventData) {
+      setEditForm({
+        title: eventData.title,
+        description: eventData.description,
+        date: eventData.date,
+        time: eventData.time,
+        location: eventData.location,
+      });
+    }
+  }, [eventData]);
+
+  const isEventOwner = session?.user?.id === eventData?.creatorId;
+  console.log("Creator ID:", eventData?.creatorId);
+  console.log("Session ID:", session?.user?.id);
+
+  // Check if event is in the past
+  const isPastEvent = (date, time) => {
+    const now = new Date();
+    const eventDateTime = new Date(`${date}T${time}`);
+    return eventDateTime < now;
+  };
 
   const fetchUserDetails = async (userId) => {
     try {
@@ -53,6 +91,7 @@ export default function EventPage() {
             return {
               name: userDetails?.name || "Unknown User",
               username: userDetails?.email || "@unknown",
+              id: userDetails?.id || "-1",
             };
           })
         );
@@ -64,6 +103,7 @@ export default function EventPage() {
           image: event.imageUrl || "/krentzman-quad.png",
           description: event.description,
           creator: event.creatorName,
+          creatorId: event.creatorId,
           date: event.date,
           time: event.time,
           location: event.location,
@@ -111,6 +151,60 @@ export default function EventPage() {
 
       setIsSignedUp(true);
 
+      // Fetch updated event data
+      const updatedResponse = await fetch("/api/events");
+      const events = await updatedResponse.json();
+      const updatedEvent = events.find((e) => e.id === eventData.id);
+
+      if (updatedEvent) {
+        // Fetch user details for all attendees, including the new user
+        const attendeesWithDetails = await Promise.all(
+          updatedEvent.attendees.map(async (userId) => {
+            const userDetails = await fetchUserDetails(userId);
+            return {
+              name: userDetails?.name || "Unknown User",
+              username: userDetails?.email || "@unknown",
+              id: userDetails?.id || "-1",
+            };
+          })
+        );
+
+        // Update both attendees and participants lists
+        setEventData((prev) => ({
+          ...prev,
+          attendees: updatedEvent.attendees,
+          participants: attendeesWithDetails,
+        }));
+
+        // Log the updated data for debugging
+        console.log("Updated event data:", {
+          attendees: updatedEvent.attendees,
+          participants: attendeesWithDetails,
+          currentUser: session.user.id,
+        });
+      }
+    } catch (error) {
+      console.error("Error joining event:", error);
+      alert("Failed to join event: " + error.message);
+    }
+  };
+
+  const handleRemoveParticipant = async (userId) => {
+    try {
+      const response = await fetch(`/api/events/${eventData.id}/remove`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to remove participant");
+      }
+
+      // Refresh event data
       const updatedResponse = await fetch("/api/events");
       const events = await updatedResponse.json();
       const updatedEvent = events.find((e) => e.id === eventData.id);
@@ -123,6 +217,7 @@ export default function EventPage() {
             return {
               name: userDetails?.name || "Unknown User",
               username: userDetails?.email || "@unknown",
+              id: userDetails?.id || "-1",
             };
           })
         );
@@ -132,12 +227,86 @@ export default function EventPage() {
           attendees: updatedEvent.attendees,
           participants: attendeesWithDetails,
         }));
+
+        if (userId === session?.user?.id) {
+          setIsSignedUp(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error removing participant:", error);
+      alert("Failed to remove participant: " + error.message);
+    }
+  };
+
+  const handleDeleteEvent = async () => {
+    if (!isEventOwner) return;
+
+    if (
+      !confirm(
+        "Are you sure you want to delete this event? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
+    console.log("Delete event debug:", {
+      eventId: eventData.id,
+      eventTitle: eventData.title,
+      isEventOwner,
+    });
+
+    try {
+      const response = await fetch(`/api/events/${eventData.id}/delete`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete event");
       }
 
-      alert("Successfully joined the event!");
+      // Redirect to home page after successful deletion
+      router.push("/");
     } catch (error) {
-      console.error("Error joining event:", error);
-      alert("Failed to join event: " + error.message);
+      console.error("Error deleting event:", error);
+      alert("Failed to delete event: " + error.message);
+    }
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!isEventOwner) return;
+
+    try {
+      const response = await fetch(`/api/events/${eventData.id}/update`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editForm),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update event");
+      }
+
+      // Refresh event data
+      const updatedResponse = await fetch("/api/events");
+      const events = await updatedResponse.json();
+      const updatedEvent = events.find((e) => e.id === eventData.id);
+
+      if (updatedEvent) {
+        setEventData((prev) => ({
+          ...prev,
+          ...updatedEvent,
+          participants: prev.participants, // Keep existing participants
+        }));
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+      alert("Failed to update event: " + error.message);
     }
   };
 
@@ -225,34 +394,160 @@ export default function EventPage() {
               <p className="text-gray-600 mb-6">{eventData.description}</p>
 
               <div className="space-y-4 mb-6">
-                <p className="text-gray-600">
-                  <span className="font-semibold">Date:</span>{" "}
-                  {new Date(eventData.date).toLocaleDateString()}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Time:</span> {eventData.time}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Location:</span>{" "}
-                  {eventData.location}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Created by:</span>{" "}
-                  {eventData.creator}
-                </p>
+                {isEditing ? (
+                  <form onSubmit={handleEditSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Title
+                      </label>
+                      <input
+                        type="text"
+                        value={editForm.title}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, title: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Description
+                      </label>
+                      <textarea
+                        value={editForm.description}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            description: e.target.value,
+                          })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        rows="3"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Date
+                      </label>
+                      <input
+                        type="date"
+                        value={editForm.date}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, date: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Time
+                      </label>
+                      <input
+                        type="time"
+                        value={editForm.time}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, time: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Location
+                      </label>
+                      <input
+                        type="text"
+                        value={editForm.location}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, location: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D41B2C] focus:ring-[#D41B2C]"
+                        required
+                      />
+                    </div>
+                    <div className="flex space-x-4">
+                      <button
+                        type="submit"
+                        className="flex-1 py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-[#D41B2C] hover:bg-[#B31824]"
+                      >
+                        Save Changes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsEditing(false)}
+                        className="flex-1 py-2 px-4 rounded-lg text-gray-700 font-medium text-sm transition bg-gray-200 hover:bg-gray-300"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Date:</span>{" "}
+                      {new Date(eventData.date).toLocaleDateString()}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Time:</span>{" "}
+                      {new Date(
+                        `2000-01-01T${eventData.time}`
+                      ).toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Location:</span>{" "}
+                      {eventData.location}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-semibold">Created by:</span>{" "}
+                      {eventData.creator}
+                    </p>
+                  </>
+                )}
               </div>
 
               <button
                 onClick={handleSignUp}
-                disabled={isSignedUp}
-                className={`w-full py-4 px-6 rounded-lg text-white font-bold text-lg transition ${
-                  isSignedUp
+                disabled={
+                  isSignedUp || isPastEvent(eventData.date, eventData.time)
+                }
+                className={`w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-green-600 hover:bg-green-700 mb-4 ${
+                  isSignedUp || isPastEvent(eventData.date, eventData.time)
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-[#D41B2C] hover:bg-[#B31824]"
                 }`}
               >
-                {isSignedUp ? "Already Signed Up" : "Sign Up for Event"}
+                {isSignedUp
+                  ? "Already Signed Up"
+                  : isPastEvent(eventData.date, eventData.time)
+                  ? "Event Has Passed"
+                  : "Sign Up for Event"}
               </button>
+
+              {isEventOwner && !isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-blue-600 hover:bg-blue-700 mb-4"
+                >
+                  Edit Event
+                </button>
+              )}
+
+              {isEventOwner && !isEditing && (
+                <button
+                  onClick={handleDeleteEvent}
+                  className="w-full py-2 px-4 rounded-lg text-white font-medium text-sm transition bg-red-600 hover:bg-red-700"
+                >
+                  Delete Event
+                </button>
+              )}
             </div>
           </div>
 
@@ -264,17 +559,41 @@ export default function EventPage() {
                 {eventData.participants.map((participant, index) => (
                   <div
                     key={index}
-                    className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg"
                   >
-                    <div className="w-10 h-10 bg-[#D41B2C] rounded-full flex items-center justify-center text-white font-semibold">
-                      {participant.name.charAt(0)}
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-[#D41B2C] rounded-full flex items-center justify-center text-white font-semibold">
+                        {participant.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-medium">{participant.name}</p>
+                        <p className="text-sm text-gray-600">
+                          {participant.username}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">{participant.name}</p>
-                      <p className="text-sm text-gray-600">
-                        {participant.username}
-                      </p>
-                    </div>
+                    {(isEventOwner || session?.user?.id === participant.id) && (
+                      <button
+                        onClick={() =>
+                          handleRemoveParticipant(eventData.attendees[index])
+                        }
+                        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
+                        title="Remove participant"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -287,7 +606,7 @@ export default function EventPage() {
       <footer className="bg-black mt-16 relative z-10">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-white">
-            <p>&copy; 2024 Stetson Social. All rights reserved.</p>
+            <p>&copy; 2025 Stetson Social. All rights reserved.</p>
           </div>
         </div>
       </footer>
