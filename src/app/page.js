@@ -177,6 +177,14 @@ export default function Home() {
           font-weight: 100 900;
         }
 
+        .text-shadow-white {
+          text-shadow: 
+            -1px -1px 0 #fff,
+            1px -1px 0 #fff,
+            -1px 1px 0 #fff,
+            1px 1px 0 #fff;
+        }
+
         .hero-text {
           font-family: "Big Shoulders Inline", sans-serif;
           color: #000000;
@@ -248,7 +256,11 @@ export default function Home() {
         <section className="container mx-auto px-6 py-16 relative z-10">
           <div className="text-center">
             <h2 className="text-6xl font-bold mb-6 text-black animate-bounce font-['Lexend']">
-              Discover Events in Stetson East/West!
+              <span className="text-shadow-white">Discover</span>{" "}
+              <span className="text-shadow-white">Events</span>{" "}
+              <span className="text-shadow-white">in</span>{" "}
+              <span className="text-shadow-white">Stetson</span>{" "}
+              <span className="text-shadow-white">East/West!</span>
             </h2>
             <button
               onClick={() => router.push("/learnmore")}
@@ -271,13 +283,13 @@ export default function Home() {
                 <div className="space-x-4">
                   <button
                     onClick={() => setActiveTab("past")}
-                    className="px-6 py-2 rounded-lg transition border-2 text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
+                    className="px-6 py-2 rounded-lg transition border-2 text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C] font-['Lexend']"
                   >
                     Past Events
                   </button>
                   <button
                     onClick={() => setActiveTab("create")}
-                    className="px-6 py-2 rounded-lg transition border-2 text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
+                    className="px-6 py-2 rounded-lg transition border-2 text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C] font-['Lexend']"
                   >
                     Create Event
                   </button>
