@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { removeAttendee, getEventById } from "@/lib/events";
 import { authOptions } from "../../../auth/[...nextauth]/route";
+import { getEventById, removeAttendee } from "@/lib/events";
 
 export async function POST(request, context) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session) {
       return NextResponse.json(
         { error: "You must be logged in to remove participants" },
@@ -24,7 +23,9 @@ export async function POST(request, context) {
       );
     }
 
-    const { userId } = await request.json();
+    const body = await request.json();
+    const { userId } = body;
+
     if (!userId) {
       return NextResponse.json(
         { error: "User ID is required" },
@@ -32,20 +33,24 @@ export async function POST(request, context) {
       );
     }
 
-    // Allow removal if user is event creator or removing themselves
     const event = await getEventById(eventId);
     if (!event) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
     }
 
-    // Allow removal if user is event creator or removing themselves
-    if (event.creatorId !== session.user.id && session.user.id !== userId) {
+    // Allow both event creator and admin to remove participants
+    if (event.creatorId !== session.user.id && session.user.admin !== "true") {
       return NextResponse.json(
-        {
-          error:
-            "You can only remove yourself or be the event creator to remove others",
-        },
+        { error: "Only the event creator or admin can remove participants" },
         { status: 403 }
+      );
+    }
+
+    // Prevent removing the event creator
+    if (userId === event.creatorId) {
+      return NextResponse.json(
+        { error: "Cannot remove the event creator" },
+        { status: 400 }
       );
     }
 
@@ -59,7 +64,7 @@ export async function POST(request, context) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error in remove participant:", error);
+    console.error("Error removing participant:", error);
     return NextResponse.json(
       { error: error.message || "Failed to remove participant" },
       { status: 500 }

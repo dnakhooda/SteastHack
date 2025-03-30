@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]/route";
-import { deleteEvent, getEventById, getAllEvents } from "@/lib/events";
+import { getEventById, deleteEvent } from "@/lib/events";
 
 export async function DELETE(request, context) {
   try {
@@ -16,17 +16,23 @@ export async function DELETE(request, context) {
     const params = await context.params;
     const eventId = params.eventId;
 
-    console.log("Delete request debug:", {
-      eventId,
-      sessionUserId: session.user.id,
-      params,
-      currentEvents: getAllEvents(),
-    });
-
     if (!eventId) {
       return NextResponse.json(
         { error: "Event ID is required" },
         { status: 400 }
+      );
+    }
+
+    const event = await getEventById(eventId);
+    if (!event) {
+      return NextResponse.json({ error: "Event not found" }, { status: 404 });
+    }
+
+    // Allow both event creator and admin to delete the event
+    if (event.creatorId !== session.user.id && session.user.admin !== "true") {
+      return NextResponse.json(
+        { error: "Only the event creator or admin can delete the event" },
+        { status: 403 }
       );
     }
 

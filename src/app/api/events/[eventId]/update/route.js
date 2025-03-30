@@ -28,9 +28,10 @@ export async function PUT(request, context) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
     }
 
-    if (event.creatorId !== session.user.id) {
+    // Allow both event creator and admin to update the event
+    if (event.creatorId !== session.user.id && session.user.admin !== "true") {
       return NextResponse.json(
-        { error: "Only the event creator can update the event" },
+        { error: "Only the event creator or admin can update the event" },
         { status: 403 }
       );
     }
