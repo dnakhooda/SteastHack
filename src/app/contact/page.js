@@ -86,7 +86,9 @@ export default function ContactPage() {
     try {
       await navigator.clipboard.writeText(email);
       setCopiedEmail(email);
-      setTimeout(() => setCopiedEmail(null), 2000);
+      setTimeout(() => {
+        setCopiedEmail(null);
+      }, 1500);
     } catch (err) {
       console.error('Failed to copy email:', err);
     }
@@ -136,7 +138,9 @@ export default function ContactPage() {
                   <p className="text-[#D41B2C] mb-4">{ambassador.role}</p>
                   <button 
                     onClick={() => handleCopyEmail(ambassador.email)}
-                    className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition inline-block cursor-pointer relative"
+                    className={`bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition-all duration-500 ease-in-out inline-block cursor-pointer relative ${
+                      copiedEmail === ambassador.email ? 'scale-110' : 'scale-100'
+                    }`}
                   >
                     {copiedEmail === ambassador.email ? 'Copied!' : ambassador.email}
                   </button>
