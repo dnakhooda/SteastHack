@@ -34,7 +34,7 @@ export default function LearnMore() {
                 Stetson Social is your one-stop platform for discovering and creating events in Stetson East. We connect Northeastern students with exciting opportunities to engage with their community.
               </p>
               <p className="text-gray-700 mb-8">
-                Whether you're looking to join existing events or create your own, Stetson Social makes it easy to stay connected with your fellow students.
+                Whether you&apos;re looking to join existing events or create your own, Stetson Social makes it easy to stay connected with your fellow students.
               </p>
             </section>
 
@@ -72,7 +72,7 @@ export default function LearnMore() {
                 <div className="text-center">
                   <div className="w-12 h-12 bg-[#D41B2C] rounded-full flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">2</div>
                   <h3 className="font-bold mb-2">Join Events</h3>
-                  <p className="text-gray-700">Sign up for events you're interested in</p>
+                  <p className="text-gray-700">Sign up for events you&apos;re interested in</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-[#D41B2C] rounded-full flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">3</div>
