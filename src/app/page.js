@@ -268,12 +268,20 @@ export default function Home() {
             <div className="relative bg-white rounded-lg p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-black">Featured Events</h2>
-                <button
-                  onClick={() => setActiveTab("create")}
-                  className="px-6 py-2 rounded-lg transition border-2 text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
-                >
-                  Create Event
-                </button>
+                <div className="space-x-4">
+                  <button
+                    onClick={() => setActiveTab("past")}
+                    className="px-6 py-2 rounded-lg transition border-2 text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
+                  >
+                    Past Events
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("create")}
+                    className="px-6 py-2 rounded-lg transition border-2 text-black hover:bg-[#D41B2C] hover:text-white border-[#D41B2C]"
+                  >
+                    Create Event
+                  </button>
+                </div>
               </div>
 
               {/* Featured Events Grid */}
@@ -337,6 +345,70 @@ export default function Home() {
                       <p>No events to display</p>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Past Events Section */}
+              {activeTab === "past" && (
+                <div>
+                  <div className="flex justify-between items-center mb-6">
+                    <button
+                      onClick={() => setActiveTab("featured")}
+                      className="flex items-center text-[#D41B2C] hover:text-[#B31824] transition"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Back to Events
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {events.filter(event => isPastEvent(event.date, event.time)).length === 0 ? (
+                      <div className="text-center text-black">
+                        <p>No past events to display</p>
+                      </div>
+                    ) : (
+                      events.filter(event => isPastEvent(event.date, event.time)).map((event) => (
+                        <div key={event.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-[#D41B2C]">
+                          <div className="relative h-48">
+                            {event.imageUrl ? (
+                              <Image
+                                src={event.imageUrl}
+                                alt={event.title}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                priority
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-[#D41B2C] flex items-center justify-center">
+                                <span className="text-white text-2xl">No Image</span>
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                            <div className="absolute bottom-4 left-4">
+                              <h3 className="text-xl font-semibold text-white">{event.title}</h3>
+                              <p className="text-white">{new Date(event.date).toLocaleDateString()} at {event.time}</p>
+                            </div>
+                          </div>
+                          <div className="p-6">
+                            <p className="text-gray-600 mb-2">Location: {event.location}</p>
+                            <p className="text-gray-700 mb-4">{event.description}</p>
+                            <p className="text-gray-600 mb-4">Created by: {event.creatorName}</p>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               )}
 
