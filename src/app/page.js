@@ -317,59 +317,59 @@ export default function Home() {
               {/* Featured Events Grid */}
               {activeTab === "featured" && (
                 <div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    {events.filter(event => !isPastEvent(event.date, event.time)).slice(0, 3).map((event) => (
-                      <div
-                        key={event.id}
-                        className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-[#D41B2C]"
-                      >
-                        <div className="relative h-48">
-                          {event.imageUrl ? (
-                            <Image
-                              src={event.imageUrl}
-                              alt={event.title}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              priority
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-[#D41B2C]"></div>
-                          )}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                          <div className="absolute bottom-4 left-4">
-                            <h3 className="text-xl font-semibold text-white">{event.title}</h3>
-                            <p className="text-white">{new Date(event.date).toLocaleDateString()} at {new Date(`2000-01-01T${event.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
-                          </div>
-                        </div>
-                        <div className="p-6">
-                          <p className="text-gray-600 mb-2">Location: {event.location}</p>
-                          <p className="text-gray-700 mb-4">{event.description}</p>
-                          <p className="text-gray-600 mb-4">Created by: {event.creatorName}</p>
-                          <button
-                            onClick={() => handleJoinEvent(event.title)}
-                            className="w-full bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition"
-                          >
-                            Join Event
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {events.filter(event => !isPastEvent(event.date, event.time)).length > 3 && (
-                    <div className="text-center">
-                      <button
-                        onClick={() => router.push('/upcomingevents')}
-                        className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-bold py-3 px-8 rounded-full transition transform hover:scale-105"
-                      >
-                        See More Events
-                      </button>
-                    </div>
-                  )}
-                  {events.filter(event => !isPastEvent(event.date, event.time)).length === 0 && (
-                    <div className="text-center text-black py-8">
+                  {events.filter(event => !isPastEvent(event.date, event.time)).length === 0 ? (
+                    <div className="text-center text-black">
                       <p className="text-lg font-semibold font-['Lexend']">No upcoming events to display</p>
                     </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {events.filter(event => !isPastEvent(event.date, event.time)).slice(0, 3).map((event) => (
+                          <div key={event.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-[#D41B2C]">
+                            <div className="relative h-48">
+                              {event.imageUrl ? (
+                                <Image
+                                  src={event.imageUrl}
+                                  alt={event.title}
+                                  fill
+                                  className="object-cover"
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                  priority
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-[#D41B2C]"></div>
+                              )}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                              <div className="absolute bottom-4 left-4">
+                                <h3 className="text-xl font-semibold text-white">{event.title}</h3>
+                                <p className="text-white">{new Date(event.date).toLocaleDateString()} at {new Date(`2000-01-01T${event.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
+                              </div>
+                            </div>
+                            <div className="p-6">
+                              <p className="text-gray-600 mb-2">Location: {event.location}</p>
+                              <p className="text-gray-700 mb-4">{event.description}</p>
+                              <p className="text-gray-600 mb-4">Created by: {event.creatorName}</p>
+                              <button
+                                onClick={() => handleJoinEvent(event.title)}
+                                className="w-full bg-[#D41B2C] hover:bg-[#B31824] text-white font-semibold py-2 px-4 rounded-lg transition"
+                              >
+                                Join Event
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {events.filter(event => !isPastEvent(event.date, event.time)).length > 3 && (
+                        <div className="text-center mt-8">
+                          <button
+                            onClick={() => router.push('/upcomingevents')}
+                            className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-bold py-3 px-8 rounded-full transition transform hover:scale-105"
+                          >
+                            See More Events
+                          </button>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               )}
@@ -377,51 +377,53 @@ export default function Home() {
               {/* Past Events Section */}
               {activeTab === "past" && (
                 <div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events.filter(event => isPastEvent(event.date, event.time)).length === 0 ? (
-                      <div className="text-center text-black py-8">
-                        <p className="text-lg font-semibold font-['Lexend']">No past events to display</p>
-                      </div>
-                    ) : (
-                      events.filter(event => isPastEvent(event.date, event.time)).slice(0, 3).map((event) => (
-                        <div key={event.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-[#D41B2C]">
-                          <div className="relative h-48">
-                            {event.imageUrl ? (
-                              <Image
-                                src={event.imageUrl}
-                                alt={event.title}
-                                fill
-                                className="object-cover"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                priority
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-[#D41B2C]"></div>
-                            )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                            <div className="absolute bottom-4 left-4">
-                              <h3 className="text-xl font-semibold text-white">{event.title}</h3>
-                              <p className="text-white">{new Date(event.date).toLocaleDateString()} at {new Date(`2000-01-01T${event.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
+                  {events.filter(event => isPastEvent(event.date, event.time)).length === 0 ? (
+                    <div className="text-center text-black">
+                      <p className="text-lg font-semibold font-['Lexend']">No past events to display</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {events.filter(event => isPastEvent(event.date, event.time)).slice(0, 3).map((event) => (
+                          <div key={event.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-[#D41B2C]">
+                            <div className="relative h-48">
+                              {event.imageUrl ? (
+                                <Image
+                                  src={event.imageUrl}
+                                  alt={event.title}
+                                  fill
+                                  className="object-cover"
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                  priority
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-[#D41B2C]"></div>
+                              )}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                              <div className="absolute bottom-4 left-4">
+                                <h3 className="text-xl font-semibold text-white">{event.title}</h3>
+                                <p className="text-white">{new Date(event.date).toLocaleDateString()} at {new Date(`2000-01-01T${event.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}</p>
+                              </div>
+                            </div>
+                            <div className="p-6">
+                              <p className="text-gray-600 mb-2">Location: {event.location}</p>
+                              <p className="text-gray-700 mb-4">{event.description}</p>
+                              <p className="text-gray-600 mb-4">Created by: {event.creatorName}</p>
                             </div>
                           </div>
-                          <div className="p-6">
-                            <p className="text-gray-600 mb-2">Location: {event.location}</p>
-                            <p className="text-gray-700 mb-4">{event.description}</p>
-                            <p className="text-gray-600 mb-4">Created by: {event.creatorName}</p>
-                          </div>
+                        ))}
+                      </div>
+                      {events.filter(event => isPastEvent(event.date, event.time)).length > 3 && (
+                        <div className="text-center mt-8">
+                          <button
+                            onClick={() => router.push('/pastevents')}
+                            className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-bold py-3 px-8 rounded-full transition transform hover:scale-105"
+                          >
+                            See All Past Events
+                          </button>
                         </div>
-                      ))
-                    )}
-                  </div>
-                  {events.filter(event => isPastEvent(event.date, event.time)).length > 3 && (
-                    <div className="text-center mt-8">
-                      <button
-                        onClick={() => router.push('/pastevents')}
-                        className="bg-[#D41B2C] hover:bg-[#B31824] text-white font-bold py-3 px-8 rounded-full transition transform hover:scale-105"
-                      >
-                        See All Past Events
-                      </button>
-                    </div>
+                      )}
+                    </>
                   )}
                 </div>
               )}
